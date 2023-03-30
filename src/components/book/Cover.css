@@ -1,0 +1,15 @@
+.cover {
+  background-color: lightgray;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  margin: 0 0 15px;
+}
+
+.cover_list {
+  width: 150px;
+  height: 200px;
+}
+
+.cover_details {
+  width: 350px;
+  height: 467px;
+}
