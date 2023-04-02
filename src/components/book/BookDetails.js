@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
-import PageTitle from '../../pages/PageTitle';
-import Cover from './Cover';
-import DescriptionItem from './DescriptionItem';
+import PageTitle from '../PageTitle';
+import Cover from '../resources/Cover';
+import DescriptionItem from '../resources/DescriptionItem';
 import './BookDetails.css';
 
 const BookDetails = () => {
