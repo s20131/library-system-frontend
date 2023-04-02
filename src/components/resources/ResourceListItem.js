@@ -1,13 +1,13 @@
 import Card from '../UI/card/Card';
 import ShortDescription from './ShortDescription';
 import Cover from './Cover';
-import './BookListItem.css';
+import './ResourceListItem.css';
 import { Link } from 'react-router-dom';
 
-const BookListItem = (props) => {
+const ResourceListItem = (props) => {
   return (
-    <Link style={{ textDecoration: 'none' }} to={`/books/${props.id}`}>
-      <Card className='book_list_item'>
+    <Link style={{ textDecoration: 'none' }} to={`/${props.resource}/${props.id}`}>
+      <Card className='resource_list_item'>
         <Cover context='cover_list' />
         <ShortDescription title={props.title} author={props.author} />
       </Card>
@@ -15,4 +15,4 @@ const BookListItem = (props) => {
   );
 };
 
-export default BookListItem;
+export default ResourceListItem;

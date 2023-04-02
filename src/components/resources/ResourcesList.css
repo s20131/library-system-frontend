@@ -1,7 +1,8 @@
-.books {
+.resources {
   display: flex;
   flex-wrap: wrap;
   padding: 1rem;
   margin: auto;
   align-items: center;
+  justify-content: space-between;
 }
