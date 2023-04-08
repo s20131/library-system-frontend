@@ -1,10 +1,8 @@
-import { useParams } from 'react-router-dom';
 import PageTitle from '../PageTitle';
 import Cover from '../resources/Cover';
 import DescriptionItem from '../resources/DescriptionItem';
 
 const EbookDetails = () => {
-  const params = useParams();
   const DUMMY_EBOOK = {
     title: 'Wiedźmin: Wieża Jaskółki',
     author: 'Andrzej Sapkowski',
@@ -17,7 +15,7 @@ const EbookDetails = () => {
 
   return (
     <>
-      <PageTitle title={`${DUMMY_EBOOK.title} (${params.ebookId})`} />
+      <PageTitle title={`${DUMMY_EBOOK.title}`} />
       <div className='book_details'>
         <Cover context='cover_details' />
         <div className='description_items'>
