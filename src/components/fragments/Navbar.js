@@ -5,7 +5,7 @@ const Navbar = () => {
     <header>
       <h1>System biblioteczny</h1>
       <nav>
-        <ul className='list'>
+        <ul>
           <NavItem title='Książki' path='/books' />
           <NavItem title='E-booki' path='/ebooks' />
           <NavItem title='Schowek' path='/storage' />

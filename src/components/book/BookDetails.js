@@ -1,40 +1,66 @@
-import { useParams } from 'react-router-dom';
 import PageTitle from '../PageTitle';
 import Cover from '../resources/Cover';
 import DescriptionItem from '../resources/DescriptionItem';
 import './BookDetails.css';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const BookDetails = () => {
   const params = useParams();
-  const DUMMY_BOOK = {
-    title: 'Wiedźmin: Wieża Jaskółki',
-    author: 'Andrzej Sapkowski',
-    series: 'Wiedźmin',
-    releaseDate: new Date(1997, 10, 1),
-    description: 'Lorem ipsum dolor...'
-  };
+  const [isLoading, setIsLoading] = useState(true);
+  const [book, setBook] = useState({});
+  const [author, setAuthor] = useState({});
+
+  const fetchBook = useCallback(async () => {
+    const response = await fetch(`http://localhost:8080/books/${params.bookId}`);
+    const book = await response.json();
+
+    const transformedBookData = {
+      title: book.title,
+      series: book.series,
+      releaseDate: new Date(book.releaseDate[0], book.releaseDate[1], book.releaseDate[2]).toLocaleDateString(),
+      authorId: book.authorId,
+      isbn: book.isbn,
+      description: book.description ?? 'brak opisu'
+    };
+    setBook(transformedBookData);
+  }, [params.bookId]);
+
+  const fetchAuthor = useCallback(async () => {
+    if (book.authorId === undefined) return;
+    const response = await fetch(`http://localhost:8080/resources/authors/${book.authorId}`);
+    const author = await response.json();
+
+    setAuthor(author);
+    setIsLoading(false);
+  }, [book.authorId]);
+
+  useEffect(() => {
+    fetchBook().then(() =>
+      fetchAuthor()
+    );
+  }, [fetchBook, fetchAuthor]);
 
   return (
     <>
-      <PageTitle title={`${DUMMY_BOOK.title} (${params.bookId})`} />
-      <div className='book_details'>
-        <Cover context='cover_details' />
-        <div className='description_items'>
-          <DescriptionItem item={listItems.author} description={DUMMY_BOOK.author} />
-          <DescriptionItem item={listItems.series} description={DUMMY_BOOK.series} />
-          <DescriptionItem item={listItems.releaseDate} description={DUMMY_BOOK.releaseDate.toLocaleDateString()} />
-          <DescriptionItem item={listItems.description} description={DUMMY_BOOK.description} />
-        </div>
-      </div>
+      {isLoading && <h2>Ładowanie...</h2>}
+      {!isLoading &&
+        <>
+          <PageTitle title={book.title} />
+          <div className='book_details'>
+            <Cover context='cover_details' />
+            <div className='description_items'>
+              <DescriptionItem item='autor' description={author.firstName + ' ' + author.lastName} />
+              <DescriptionItem item='seria' description={book.series} />
+              <DescriptionItem item='data wydania' description={book.releaseDate} />
+              <DescriptionItem item='opis' description={book.description} />
+              <DescriptionItem item='ISBN' description={book.isbn} />
+            </div>
+          </div>
+        </>
+      }
     </>
   );
-};
-
-const listItems = {
-  author: 'autor',
-  series: 'seria',
-  releaseDate: 'data wydania',
-  description: 'opis'
 };
 
 export default BookDetails;

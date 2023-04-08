@@ -9,15 +9,15 @@ const ResourcesList = (props) => {
     const response = await fetch(`http://localhost:8080/${props.resource}`);
     const data = await response.json();
 
-    const transformedData = data.map((bookData) => {
+    const transformedData = data.map((resourceData) => {
       return {
-        id: bookData.id,
-        title: bookData.title,
-        author: bookData.author.firstName + ' ' + bookData.author.lastName
+        id: resourceData.resource.id,
+        title: resourceData.resource.title,
+        author: resourceData.author.firstName + ' ' + resourceData.author.lastName
       };
     });
     setResources(transformedData);
-  }, [resources]);
+  }, [props.resource]);
 
   useEffect(() => {
     fetchResources();

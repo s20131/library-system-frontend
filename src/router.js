@@ -14,7 +14,7 @@ const router = createBrowserRouter([
       { path: 'books', element: <ResourcesPage resource='books' /> },
       { path: 'books/:bookId', element: <BookDetails /> },
       { path: 'ebooks', element: <ResourcesPage resource='ebooks' /> },
-      { path: 'ebooks/:ebookId', element: <EbookDetails /> },
+      { path: 'ebooks/:ebookId', element: <EbookDetails /> }
     ]
   }
 ]);
