@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 const ResourceListItem = (props) => {
   return (
+    // TODO link inside card
     <Link style={{ textDecoration: 'none' }} to={`/${props.resource}/${props.id}`}>
       <Card className='resource_list_item'>
         <Cover context='cover_list' />

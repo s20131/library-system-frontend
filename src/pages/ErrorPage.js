@@ -1,10 +1,10 @@
-import Navbar from '../components/fragments/Navbar';
+import NavBar from '../components/fragments/NavBar';
 import Footer from '../components/fragments/Footer';
 
 const ErrorPage = () => {
   return (
     <>
-      <Navbar />
+      <NavBar />
       <main>
         <h1>Error!</h1>
       </main>

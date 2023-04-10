@@ -17,11 +17,11 @@ const BookDetails = () => {
 
     const transformedBookData = {
       title: book.title,
+      authorId: book.authorId,
       series: book.series,
       releaseDate: new Date(book.releaseDate[0], book.releaseDate[1], book.releaseDate[2]).toLocaleDateString(),
-      authorId: book.authorId,
       isbn: book.isbn,
-      description: book.description ?? 'brak opisu'
+      description: book.description
     };
     setBook(transformedBookData);
   }, [params.bookId]);
@@ -53,7 +53,7 @@ const BookDetails = () => {
               <DescriptionItem item='autor' description={author.firstName + ' ' + author.lastName} />
               <DescriptionItem item='seria' description={book.series} />
               <DescriptionItem item='data wydania' description={book.releaseDate} />
-              <DescriptionItem item='opis' description={book.description} />
+              <DescriptionItem item='opis' description={book.description ?? 'brak opisu'} />
               <DescriptionItem item='ISBN' description={book.isbn} />
             </div>
           </div>
