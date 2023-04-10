@@ -1,6 +1,6 @@
 import NavItem from './NavItem';
 
-const Navbar = () => {
+const NavBar = () => {
   return (
     <header>
       <h1>System biblioteczny</h1>
@@ -18,4 +18,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;
