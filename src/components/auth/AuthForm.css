@@ -1,0 +1,28 @@
+.wrapper {
+  max-width: 500px;
+  background-color: #499147;
+  padding: 2rem;
+  margin: auto;
+  border-radius: 6px;
+}
+
+.login_form {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.login_form label,
+.login_form input {
+  width: 100%;
+  padding-bottom: 0.25rem;
+}
+
+.login_form input {
+  margin-bottom: 2rem;
+}
+
+.login_form div {
+  display: flex;
+  justify-content: space-between;
+}

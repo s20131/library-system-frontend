@@ -4,6 +4,8 @@ import ResourcesPage from './pages/ResourcesPage';
 import ErrorPage from './pages/ErrorPage';
 import BookDetails from './components/book/BookDetails';
 import EbookDetails from './components/ebook/EbookDetails';
+import AuthPage from './pages/AuthPage';
+import { action as authAction } from './components/auth/AuthForm';
 
 const router = createBrowserRouter([
   {
@@ -11,6 +13,7 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
+      { path: 'auth', element: <AuthPage />, action: authAction },
       { path: 'books', element: <ResourcesPage resource='books' /> },
       { path: 'books/:bookId', element: <BookDetails /> },
       { path: 'ebooks', element: <ResourcesPage resource='ebooks' /> },

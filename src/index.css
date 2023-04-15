@@ -50,6 +50,17 @@ footer {
   justify-content: flex-end;
 }
 
+a {
+  color: whitesmoke;
+  text-decoration: none;
+}
+
+a:hover,
+a.active {
+  color: bisque;
+  text-decoration: underline;
+}
+
 nav ul {
   display: flex;
   gap: 3rem;
@@ -60,18 +71,12 @@ nav ul a {
   color: whitesmoke;
 }
 
-nav ul a:hover,
-nav ul a.active {
-  color: bisque;
-  text-decoration: underline;
-}
-
 input {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
   sans-serif;
   border-radius: 6px;
-  height: 1.7rem;
+  height: 2rem;
   width: 20rem;
   border: 1px solid rgba(0, 0, 0, 0.5);
   background-color: whitesmoke;

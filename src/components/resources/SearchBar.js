@@ -1,20 +1,19 @@
 import './SearchBar.css';
+import Button from '../UI/button/Button';
 
 const SearchBar = (props) => {
 
   const searchHandler = () => {
-
+    // TODO
   };
 
   return (
-    <form >
-      <p className='search_bar'>
+    <form>
+      <div className='search_bar'>
         <label htmlFor='search'>Wyszukaj książkę, frazę, autora...</label>
         <input id='search' type='text' name='search' />
-        <button type='button' onClick={searchHandler} >
-          Szukaj
-        </button>
-      </p>
+        <Button type='button' onClick={searchHandler}>Szukaj</Button>
+      </div>
     </form>
   );
 };

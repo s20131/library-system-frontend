@@ -12,6 +12,7 @@ const NavBar = () => {
           <NavItem title='Rezerwacje' path='/reservations' />
           <NavItem title='Wypożyczenia' path='/rentals' />
           <NavItem title='Konto' path='/account' />
+          <NavItem title='Rejestracja' path='/auth?mode=register' />
         </ul>
       </nav>
     </header>
