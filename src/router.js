@@ -6,13 +6,18 @@ import BookDetails from './components/book/BookDetails';
 import EbookDetails from './components/ebook/EbookDetails';
 import AuthPage from './pages/AuthPage';
 import { action as authAction } from './components/auth/AuthForm';
+import { authLoader } from './utils/auth';
+import HomePage from './pages/HomePage';
 
 const router = createBrowserRouter([
   {
     path: '/',
+    id: 'root',
+    loader: authLoader,
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
+      { index: true, element: <HomePage /> },
       { path: 'auth', element: <AuthPage />, action: authAction },
       { path: 'books', element: <ResourcesPage resource='books' /> },
       { path: 'books/:bookId', element: <BookDetails /> },

@@ -5,7 +5,7 @@ const NavItem = (props) => {
     <li>
       <NavLink
         to={props.path}
-        // TODO import?
+        // TODO import active?
         className={({ isActive }) => isActive ? 'active' : undefined}
       >
         {props.title}

@@ -2,13 +2,16 @@ import ResourceListItem from './ResourceListItem';
 import './ResourcesList.css';
 import { useCallback, useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
+import { authHeader } from '../../utils/auth';
 
 const ResourcesList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/${props.resource}`);
+    const response = await fetch(`http://localhost:8080/${props.resource}`, {
+      headers: authHeader()
+    });
     const data = await response.json();
 
     const transformedData = data.map((resourceData) => {

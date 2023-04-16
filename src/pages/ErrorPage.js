@@ -1,12 +1,15 @@
 import NavBar from '../components/fragments/NavBar';
 import Footer from '../components/fragments/Footer';
+import { useRouteError } from 'react-router-dom';
 
 const ErrorPage = () => {
+  const error = useRouteError()
   return (
     <>
       <NavBar />
       <main>
-        <h1>Error!</h1>
+        <h1>{error.status}</h1>
+        <p>{(error.data && error.data.message) || 'Wystąpił nieznany błąd'}</p>
       </main>
       <Footer />
     </>

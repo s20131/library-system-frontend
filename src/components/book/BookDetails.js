@@ -4,6 +4,7 @@ import DescriptionItem from '../resources/DescriptionItem';
 import './BookDetails.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { authHeader } from '../../utils/auth';
 
 const BookDetails = () => {
   const params = useParams();
@@ -12,7 +13,9 @@ const BookDetails = () => {
   const [author, setAuthor] = useState({});
 
   const fetchBook = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/books/${params.bookId}`);
+    const response = await fetch(`http://localhost:8080/books/${params.bookId}`, {
+      headers: authHeader()
+    });
     const book = await response.json();
 
     const transformedBookData = {
@@ -28,7 +31,9 @@ const BookDetails = () => {
 
   const fetchAuthor = useCallback(async () => {
     if (book.authorId === undefined) return;
-    const response = await fetch(`http://localhost:8080/resources/authors/${book.authorId}`);
+    const response = await fetch(`http://localhost:8080/resources/authors/${book.authorId}`, {
+      headers: authHeader()
+    });
     const author = await response.json();
 
     setAuthor(author);

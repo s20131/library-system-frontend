@@ -39,21 +39,45 @@ const AuthForm = () => {
 export default AuthForm;
 
 export const action = async ({ request }) => {
+  const queryParams = new URL(request.url).searchParams;
   const data = await request.formData();
-  await fetch('http://localhost:8080/users', {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      firstName: data.get('firstName'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      username: data.get('username'),
-      password: data.get('password')
-    })
-  });
-// TODO handle error response
+  if(queryParams.get('mode') === 'register') {
+    await fetch('http://localhost:8080/auth/register', {
+      method: request.method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName'),
+        email: data.get('email'),
+        username: data.get('username'),
+        password: data.get('password')
+      })
+    });
+    // TODO handle error response
 
-  return redirect('/auth?mode=login');
+    return redirect('/auth?mode=login');
+  } else {
+    const username = data.get('username')
+    const password = data.get('password')
+    const response = await fetch('http://localhost:8080/auth/login', {
+      method: request.method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    });
+
+    if (response.ok) {
+      const encodedUser = window.btoa(username + ':' + password)
+      localStorage.setItem('user', encodedUser)
+    }
+    // TODO handle error response
+
+    return redirect('/books');
+  }
 };
