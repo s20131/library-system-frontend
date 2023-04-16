@@ -4,6 +4,7 @@ import DescriptionItem from '../resources/DescriptionItem';
 import { useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import '../book/BookDetails.css';
+import { authHeader } from '../../utils/auth';
 
 const EbookDetails = () => {
   const params = useParams();
@@ -12,7 +13,9 @@ const EbookDetails = () => {
   const [author, setAuthor] = useState({});
 
   const fetchEbook = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/ebooks/${params.ebookId}`);
+    const response = await fetch(`http://localhost:8080/ebooks/${params.ebookId}`, {
+      headers: authHeader()
+    });
     const ebook = await response.json();
 
     const transformedEbookData = {
@@ -29,7 +32,9 @@ const EbookDetails = () => {
 
   const fetchAuthor = useCallback(async () => {
     if (ebook.authorId === undefined) return;
-    const response = await fetch(`http://localhost:8080/resources/authors/${ebook.authorId}`);
+    const response = await fetch(`http://localhost:8080/resources/authors/${ebook.authorId}`, {
+      headers: authHeader()
+    });
     const author = await response.json();
 
     setAuthor(author);
