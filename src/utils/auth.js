@@ -1,18 +1,32 @@
-const key = 'user'
+import { redirect } from 'react-router-dom';
+
+const key = 'user';
 
 export const authHeader = () => {
-  const currentUser = localStorage.getItem(key)
+  const currentUser = localStorage.getItem(key);
   if (currentUser) {
-    return { 'Authorization': 'Basic ' + currentUser}
+    return { 'Authorization': 'Basic ' + currentUser };
   } else {
-    return {}
+    return {};
   }
-}
+};
+
+const getAuthToken = () => {
+  return localStorage.getItem(key);
+};
 
 export const authLoader = () => {
-  return localStorage.getItem(key)
-}
+  return getAuthToken();
+};
+
+export const checkAuthLoader = () => {
+  const token = getAuthToken();
+  if (!token) {
+    return redirect('/auth?mode=login');
+  }
+  return null;
+};
 
 export const logout = () => {
-  localStorage.removeItem(key)
-}
+  localStorage.removeItem(key);
+};
