@@ -20,7 +20,7 @@ const NavBar = () => {
               <NavItem title='Konto' path='/account' />
             </>
           }
-          {!isAuthenticated && <NavItem title='Rejestracja' path='/auth?mode=register' />}
+          {!isAuthenticated && <NavItem title='Logowanie' path='/auth?mode=login' />}
           {
             //TODO change to a button with action and redirect from /logout?
             isAuthenticated && <Link to='/auth?mode=login' onClick={logout}>Wyloguj</Link>

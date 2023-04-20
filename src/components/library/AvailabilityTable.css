@@ -1,0 +1,23 @@
+.availability_table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.availability_table th, td {
+  padding-bottom: 0.4rem;
+  padding-right: 1rem;
+  text-align: left;
+}
+
+.availability_table th {
+  padding-left: 1rem;
+}
+
+.availability_table td:last-child {
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.availability_table tr:nth-child(odd) {
+  background-color: #499147;
+}

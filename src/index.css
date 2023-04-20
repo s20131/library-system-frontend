@@ -1,8 +1,11 @@
-body {
-  margin: 0;
+* {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
   sans-serif;
+}
+
+body {
+  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(89, 182, 86);
@@ -22,8 +25,6 @@ ul {
 
 main {
   margin: 2rem auto;
-  text-align: center;
-
 }
 
 header {
@@ -72,12 +73,17 @@ nav ul a {
 }
 
 input {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
   border-radius: 6px;
   height: 2rem;
   width: 20rem;
   border: 1px solid rgba(0, 0, 0, 0.5);
   background-color: whitesmoke;
+}
+
+.padded_content {
+  padding: 0 2rem 2rem;
+}
+
+th, td {
+  vertical-align: initial;
 }

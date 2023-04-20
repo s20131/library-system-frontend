@@ -9,7 +9,7 @@ const AuthForm = () => {
 
   return (
     <div className='wrapper'>
-      <h1>{isLogin ? 'Logowanie' : 'Rejestracja'}</h1>
+      <h1 className='form_title'>{isLogin ? 'Logowanie' : 'Rejestracja'}</h1>
       <Form method='post' className='login_form'>
         <label htmlFor='username'>Nazwa użytkownika</label>
         <input id='username' type='text' name='username' required />
@@ -41,7 +41,7 @@ export default AuthForm;
 export const action = async ({ request }) => {
   const queryParams = new URL(request.url).searchParams;
   const data = await request.formData();
-  if(queryParams.get('mode') === 'register') {
+  if (queryParams.get('mode') === 'register') {
     await fetch('http://localhost:8080/auth/register', {
       method: request.method,
       headers: {
@@ -59,8 +59,8 @@ export const action = async ({ request }) => {
 
     return redirect('/auth?mode=login');
   } else {
-    const username = data.get('username')
-    const password = data.get('password')
+    const username = data.get('username');
+    const password = data.get('password');
     const response = await fetch('http://localhost:8080/auth/login', {
       method: request.method,
       headers: {
@@ -73,11 +73,12 @@ export const action = async ({ request }) => {
     });
 
     if (response.ok) {
-      const encodedUser = window.btoa(username + ':' + password)
-      localStorage.setItem('user', encodedUser)
+      const encodedUser = window.btoa(username + ':' + password);
+      localStorage.setItem('user', encodedUser);
+      return redirect('/books');
     }
     // TODO handle error response
 
-    return redirect('/books');
+    return null;
   }
 };

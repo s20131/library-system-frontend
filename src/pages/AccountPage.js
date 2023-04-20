@@ -1,5 +1,7 @@
+import PageTitle from '../components/PageTitle';
+
 const AccountPage = () => {
-  return <h1>TODO</h1>;
+  return <PageTitle>TODO</PageTitle>;
 };
 
 export default AccountPage;

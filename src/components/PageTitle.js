@@ -1,7 +1,5 @@
-import './PageTitle.css';
-
 const PageTitle = (props) => {
-  return <h2>{props.title}</h2>;
+  return <h2 style={{padding: '0 2rem'}}>{props.children}</h2>;
 };
 
 export default PageTitle;
