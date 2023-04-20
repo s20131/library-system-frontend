@@ -1,11 +1,11 @@
-import ResourcesList from '../components/resources/ResourcesList';
+import ResourcesList from '../components/resource/ResourcesList';
 import PageTitle from '../components/PageTitle';
 
 const ResourcesPage = (props) => {
   const title = props.resource === 'books' ? 'książki' : 'ebooki';
   return (
     <>
-      <PageTitle title={`Polecane ${title}`} />
+      <PageTitle>{`Polecane ${title}`}</PageTitle>
       <ResourcesList resource={props.resource} />
     </>
   );

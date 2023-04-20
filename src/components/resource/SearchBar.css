@@ -1,0 +1,9 @@
+.search_bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search_bar > *:not(:first-child) {
+  margin-left: 10px;
+}

@@ -3,6 +3,7 @@ import './ResourcesList.css';
 import { useCallback, useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import { authHeader } from '../../utils/auth';
+import PageTitle from '../PageTitle';
 
 const ResourcesList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +27,7 @@ const ResourcesList = (props) => {
   }, [props.resource]);
 
   useEffect(() => {
-    fetchResources();
+    void fetchResources();
   }, [fetchResources]);
 
   if (resources.length === 0 && !isLoading) {
@@ -36,7 +37,7 @@ const ResourcesList = (props) => {
   return (
     <>
       <SearchBar />
-      {isLoading && <h2>Ładowanie...</h2>}
+      {isLoading && <PageTitle>Ładowanie...</PageTitle>}
       {!isLoading &&
         <div className='resources'>
           {resources.map((resource) => (

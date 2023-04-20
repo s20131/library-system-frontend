@@ -1,16 +1,17 @@
 import PageTitle from '../PageTitle';
-import Cover from '../resources/Cover';
-import DescriptionItem from '../resources/DescriptionItem';
-import { useParams } from 'react-router-dom';
+import Cover from '../resource/Cover';
+import { useParams, useRouteLoaderData } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import '../book/BookDetails.css';
 import { authHeader } from '../../utils/auth';
+import AvailabilityTable from '../library/AvailabilityTable';
 
 const EbookDetails = () => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [ebook, setEbook] = useState({});
   const [author, setAuthor] = useState({});
+  const isAuthenticated = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
     const response = await fetch(`http://localhost:8080/ebooks/${params.ebookId}`, {
@@ -49,20 +50,45 @@ const EbookDetails = () => {
 
   return (
     <>
-      {isLoading && <h2>Ładowanie...</h2>}
+      {isLoading && <PageTitle>Ładowanie...</PageTitle>}
       {!isLoading &&
         <>
-          <PageTitle title={`${ebook.title}`} />
-          <div className='book_details'>
-            <Cover context='cover_details' />
-            <div className='description_items'>
-              <DescriptionItem item='autor' description={author.firstName + ' ' + author.lastName} />
-              <DescriptionItem item='seria' description={ebook.series} />
-              <DescriptionItem item='data wydania' description={ebook.releaseDate} />
-              <DescriptionItem item='opis' description={ebook.description ?? 'brak opisu'} />
-              <DescriptionItem item='format' description={ebook.format} />
-              <DescriptionItem item='rozmiar (kB)' description={ebook.size} />
+          <PageTitle>{ebook.title}</PageTitle>
+          <div className='padded_content'>
+            <div className='book_details'>
+              <Cover context='cover_details' />
+              <div className='table_container'>
+                <table className='description_table'>
+                  <tbody>
+                  <tr>
+                    <th>autor</th>
+                    <td>{author.firstName + ' ' + author.lastName}</td>
+                  </tr>
+                  <tr>
+                    <th>seria</th>
+                    <td>{ebook.series}</td>
+                  </tr>
+                  <tr>
+                    <th>data wydania</th>
+                    <td>{ebook.releaseDate}</td>
+                  </tr>
+                  <tr>
+                    <th>opis</th>
+                    <td>{ebook.description ?? 'brak opisu'}</td>
+                  </tr>
+                  <tr>
+                    <th>format</th>
+                    <td>{ebook.format}</td>
+                  </tr>
+                  <tr>
+                    <th>rozmiar (kB)</th>
+                    <td>{ebook.size}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+            {isAuthenticated && <AvailabilityTable />}
           </div>
         </>
       }

@@ -23,9 +23,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'auth', element: <AuthPage />, action: authAction },
-      { path: 'books', element: <ResourcesPage resource='books' /> },
+      { path: 'books', element: <ResourcesPage resource='books' key='books' /> },
       { path: 'books/:bookId', element: <BookDetails /> },
-      { path: 'ebooks', element: <ResourcesPage resource='ebooks' /> },
+      { path: 'ebooks', element: <ResourcesPage resource='ebooks' key='ebooks' /> },
       { path: 'ebooks/:ebookId', element: <EbookDetails /> },
       { path: 'storage', element: <StoragePage />, loader: checkAuthLoader },
       { path: 'reservations', element: <ReservationsPage />, loader: checkAuthLoader },

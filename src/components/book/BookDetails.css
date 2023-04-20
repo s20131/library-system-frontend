@@ -1,5 +1,25 @@
 .book_details {
   display: flex;
-  margin: 1rem;
-  text-align: left;
+}
+
+.table_container {
+  margin-left: 2rem;
+  width: 100%;
+}
+
+.description_table {
+  border-collapse: collapse;
+  width: 50%;
+}
+
+.description_table th, td {
+  padding: 1rem;
+}
+
+.description_table th {
+  text-align: right;
+}
+
+.description_table tr:nth-child(even) {
+  background-color: #499147;
 }

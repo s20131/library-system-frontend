@@ -12,7 +12,7 @@ const SearchBar = (props) => {
       <div className='search_bar'>
         <label htmlFor='search'>Wyszukaj książkę, frazę, autora...</label>
         <input id='search' type='text' name='search' />
-        <Button type='button' onClick={searchHandler}>Szukaj</Button>
+        <Button onClick={searchHandler}>Szukaj</Button>
       </div>
     </form>
   );

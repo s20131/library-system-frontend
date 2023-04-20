@@ -1,5 +1,7 @@
+import PageTitle from '../components/PageTitle';
+
 const StoragePage = () => {
-  return <h1>TODO</h1>;
+  return <PageTitle>TODO</PageTitle>;
 };
 
 export default StoragePage;
