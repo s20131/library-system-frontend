@@ -1,15 +1,14 @@
-import ResourceListItem from './ResourceListItem';
-import './ResourcesList.css';
 import { useCallback, useEffect, useState } from 'react';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
+import ResourceListItem from './ResourceListItem';
 
-const ResourcesList = (props) => {
+const StoredResourcesList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/${props.resource}`, {
+    const response = await fetch('http://localhost:8080/storage', {
       headers: authHeader()
     });
     const data = await response.json();
@@ -18,19 +17,20 @@ const ResourcesList = (props) => {
       return {
         id: resourceData.resource.id,
         title: resourceData.resource.title,
-        author: resourceData.author.firstName + ' ' + resourceData.author.lastName
+        author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
+        type: resourceData.resourceType.toLowerCase() + 's' // books, ebooks
       };
     });
     setResources(transformedData);
     setIsLoading(false);
-  }, [props.resource]);
+  }, []);
 
   useEffect(() => {
     void fetchResources();
   }, [fetchResources]);
 
   if (resources.length === 0 && !isLoading) {
-    return <h2 className='padded_content'>Nie znaleziono żadnych {props.resource === 'books' ? 'książek' : 'ebooków'}.</h2>;
+    return <h2 className='padded_content'>Nie znaleziono żadnych zachowanych zasobów.</h2>;
   }
 
   return (
@@ -44,7 +44,7 @@ const ResourcesList = (props) => {
               id={resource.id}
               title={resource.title}
               author={resource.author}
-              resource={props.resource}
+              resource={resource.type}
             />
           ))}
         </div>
@@ -53,4 +53,4 @@ const ResourcesList = (props) => {
   );
 };
 
-export default ResourcesList;
+export default StoredResourcesList;
