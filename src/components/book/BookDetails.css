@@ -2,6 +2,12 @@
   display: flex;
 }
 
+.title_row {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 2rem;
+}
+
 .table_container {
   margin-left: 2rem;
   width: 100%;
