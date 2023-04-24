@@ -5,12 +5,14 @@ import { useCallback, useEffect, useState } from 'react';
 import '../book/BookDetails.css';
 import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
+import Button from '../UI/button/Button';
 
 const EbookDetails = () => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [ebook, setEbook] = useState({});
   const [author, setAuthor] = useState({});
+  const [hasInStorage, setHasInStorage] = useState(false);
   const isAuthenticated = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
@@ -42,18 +44,49 @@ const EbookDetails = () => {
     setIsLoading(false);
   }, [ebook.authorId]);
 
+  const fetchHasInStorage = useCallback(async () => {
+    const response = await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+      headers: authHeader()
+    });
+    const hasInStorage = await response.json();
+
+    setHasInStorage(hasInStorage);
+  }, [params.ebookId]);
+
   useEffect(() => {
     fetchEbook().then(() =>
-      fetchAuthor()
+      fetchAuthor().then(() => {
+        if (isAuthenticated)
+          void fetchHasInStorage();
+      })
     );
-  }, [fetchEbook, fetchAuthor]);
+  }, [fetchEbook, fetchAuthor, isAuthenticated,fetchHasInStorage]);
+
+  const addToStorageHandler = useCallback(async () => {
+    await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+      headers: authHeader(),
+      method: 'post'
+    });
+  }, [params.ebookId]);
+
+  const removeFromStorageHandler = useCallback(async () => {
+    await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+      headers: authHeader(),
+      method: 'delete'
+    });
+    setHasInStorage(false);
+  }, [params.ebookId]);
 
   return (
     <>
       {isLoading && <PageTitle>Ładowanie...</PageTitle>}
       {!isLoading &&
         <>
-          <PageTitle>{ebook.title}</PageTitle>
+          <div className='title_row'>
+            <PageTitle>{ebook.title}</PageTitle>
+            {isAuthenticated && !hasInStorage && <Button onClick={addToStorageHandler}>Dodaj do schowka</Button>}
+            {isAuthenticated && hasInStorage && <Button onClick={removeFromStorageHandler}>Usuń ze schowka</Button>}
+          </div>
           <div className='padded_content'>
             <div className='book_details'>
               <Cover context='cover_details' />
