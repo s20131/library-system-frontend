@@ -2,13 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
 import ResourceListItem from './ResourceListItem';
+import config from '../../config';
 
 const StoredResourcesList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch('http://localhost:8080/storage', {
+    const response = await fetch(`${config.baseUrl}/storage`, {
       headers: authHeader()
     });
     const data = await response.json();

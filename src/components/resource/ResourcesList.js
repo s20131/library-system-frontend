@@ -3,13 +3,14 @@ import './ResourcesList.css';
 import { useCallback, useEffect, useState } from 'react';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
+import config from '../../config';
 
 const ResourcesList = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/${props.resource}`, {
+    const response = await fetch(`${config.baseUrl}/${props.resource}`, {
       headers: authHeader()
     });
     const data = await response.json();

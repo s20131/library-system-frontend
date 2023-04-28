@@ -2,13 +2,14 @@ import './AvailabilityTable.css';
 import Button from '../UI/button/Button';
 import { useCallback, useEffect, useState } from 'react';
 import { authHeader } from '../../utils/auth';
+import config from '../../config';
 
 const AvailabilityTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [libraries, setLibraries] = useState([]);
 
   const fetchLibaries = useCallback(async () => {
-      const response = await fetch('http://localhost:8080/libraries', {
+      const response = await fetch(`${config.baseUrl}/libraries`, {
         headers: authHeader()
       });
 
