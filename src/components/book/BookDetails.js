@@ -6,6 +6,7 @@ import { useParams, useRouteLoaderData } from 'react-router-dom';
 import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
+import config from '../../config';
 
 const BookDetails = () => {
   const params = useParams();
@@ -16,7 +17,7 @@ const BookDetails = () => {
   const isAuthenticated = useRouteLoaderData('root');
 
   const fetchBook = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/books/${params.bookId}`, {
+    const response = await fetch(`${config.baseUrl}/books/${params.bookId}`, {
       headers: authHeader()
     });
     const book = await response.json();
@@ -34,7 +35,7 @@ const BookDetails = () => {
 
   const fetchAuthor = useCallback(async () => {
     if (book.authorId === undefined) return;
-    const response = await fetch(`http://localhost:8080/resources/authors/${book.authorId}`, {
+    const response = await fetch(`${config.baseUrl}/resources/authors/${book.authorId}`, {
       headers: authHeader()
     });
     const author = await response.json();
@@ -44,7 +45,7 @@ const BookDetails = () => {
   }, [book.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/storage/${params.bookId}`, {
+    const response = await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
       headers: authHeader()
     });
     const hasInStorage = await response.json();
@@ -53,16 +54,17 @@ const BookDetails = () => {
   }, [params.bookId]);
 
   useEffect(() => {
-    fetchBook().then(() =>
-      fetchAuthor().then(() => {
-        if (isAuthenticated)
-          void fetchHasInStorage();
-      })
-    );
+    const fetchData = async () => {
+      await fetchBook();
+      await fetchAuthor();
+      if (isAuthenticated)
+        await fetchHasInStorage();
+    };
+    void fetchData();
   }, [fetchBook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`http://localhost:8080/storage/${params.bookId}`, {
+    await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'post'
     });
@@ -70,7 +72,7 @@ const BookDetails = () => {
   }, [params.bookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`http://localhost:8080/storage/${params.bookId}`, {
+    await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'delete'
     });

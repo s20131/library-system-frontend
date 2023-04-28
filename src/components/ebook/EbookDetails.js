@@ -6,6 +6,7 @@ import '../book/BookDetails.css';
 import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
+import config from '../../config';
 
 const EbookDetails = () => {
   const params = useParams();
@@ -16,7 +17,7 @@ const EbookDetails = () => {
   const isAuthenticated = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/ebooks/${params.ebookId}`, {
+    const response = await fetch(`${config.baseUrl}/ebooks/${params.ebookId}`, {
       headers: authHeader()
     });
     const ebook = await response.json();
@@ -35,7 +36,7 @@ const EbookDetails = () => {
 
   const fetchAuthor = useCallback(async () => {
     if (ebook.authorId === undefined) return;
-    const response = await fetch(`http://localhost:8080/resources/authors/${ebook.authorId}`, {
+    const response = await fetch(`${config.baseUrl}/resources/authors/${ebook.authorId}`, {
       headers: authHeader()
     });
     const author = await response.json();
@@ -45,7 +46,7 @@ const EbookDetails = () => {
   }, [ebook.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
-    const response = await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+    const response = await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
       headers: authHeader()
     });
     const hasInStorage = await response.json();
@@ -54,23 +55,24 @@ const EbookDetails = () => {
   }, [params.ebookId]);
 
   useEffect(() => {
-    fetchEbook().then(() =>
-      fetchAuthor().then(() => {
-        if (isAuthenticated)
-          void fetchHasInStorage();
-      })
-    );
-  }, [fetchEbook, fetchAuthor, isAuthenticated,fetchHasInStorage]);
+    const fetchData = async () => {
+      await fetchEbook();
+      await fetchAuthor();
+      if (isAuthenticated)
+        await fetchHasInStorage();
+    };
+    void fetchData();
+  }, [fetchEbook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+    await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'post'
     });
   }, [params.ebookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`http://localhost:8080/storage/${params.ebookId}`, {
+    await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'delete'
     });
