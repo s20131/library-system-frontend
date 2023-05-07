@@ -10,7 +10,7 @@ const ResourcesList = (props) => {
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/${props.resource}`, {
+    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`, {
       headers: authHeader()
     });
     const data = await response.json();

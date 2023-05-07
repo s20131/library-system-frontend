@@ -17,7 +17,7 @@ const EbookDetails = () => {
   const isAuthenticated = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/ebooks/${params.ebookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/ebooks/${params.ebookId}`, {
       headers: authHeader()
     });
     const ebook = await response.json();
@@ -36,7 +36,7 @@ const EbookDetails = () => {
 
   const fetchAuthor = useCallback(async () => {
     if (ebook.authorId === undefined) return;
-    const response = await fetch(`${config.baseUrl}/resources/authors/${ebook.authorId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/resources/authors/${ebook.authorId}`, {
       headers: authHeader()
     });
     const author = await response.json();
@@ -46,7 +46,7 @@ const EbookDetails = () => {
   }, [ebook.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader()
     });
     const hasInStorage = await response.json();
@@ -65,14 +65,14 @@ const EbookDetails = () => {
   }, [fetchEbook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
+    await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'post'
     });
   }, [params.ebookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`${config.baseUrl}/storage/${params.ebookId}`, {
+    await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'delete'
     });
@@ -109,7 +109,7 @@ const EbookDetails = () => {
                   </tr>
                   <tr>
                     <th>opis</th>
-                    <td>{ebook.description ?? 'brak opisu'}</td>
+                    <td>{ebook.description ?? <i>brak opisu</i>}</td>
                   </tr>
                   <tr>
                     <th>format</th>
