@@ -43,7 +43,7 @@ export const action = async ({ request }) => {
   const queryParams = new URL(request.url).searchParams;
   const data = await request.formData();
   if (queryParams.get('mode') === 'register') {
-    await fetch(`${config.baseUrl}/auth/register`, {
+    await fetch(`${config.serverBaseUrl}/auth/register`, {
       method: request.method,
       headers: {
         'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ export const action = async ({ request }) => {
   } else {
     const username = data.get('username');
     const password = data.get('password');
-    const response = await fetch(`${config.baseUrl}/auth/login`, {
+    const response = await fetch(`${config.serverBaseUrl}/auth/login`, {
       method: request.method,
       headers: {
         'Content-Type': 'application/json'

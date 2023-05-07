@@ -9,7 +9,7 @@ const AvailabilityTable = () => {
   const [libraries, setLibraries] = useState([]);
 
   const fetchLibaries = useCallback(async () => {
-      const response = await fetch(`${config.baseUrl}/libraries`, {
+      const response = await fetch(`${config.serverBaseUrl}/libraries`, {
         headers: authHeader()
       });
 

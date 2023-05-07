@@ -7,6 +7,7 @@ import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
 import config from '../../config';
+import useFetch from '../../hooks/useFetch';
 
 const BookDetails = () => {
   const params = useParams();
@@ -16,28 +17,24 @@ const BookDetails = () => {
   const [hasInStorage, setHasInStorage] = useState(false);
   const isAuthenticated = useRouteLoaderData('root');
 
-  const fetchBook = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/books/${params.bookId}`, {
-      headers: authHeader()
-    });
-    const book = await response.json();
-
-    const transformedBookData = {
-      title: book.title,
-      authorId: book.authorId,
-      series: book.series,
-      releaseDate: new Date(book.releaseDate[0], book.releaseDate[1], book.releaseDate[2]).toLocaleDateString(),
-      isbn: book.isbn,
-      description: book.description
-    };
-    setBook(transformedBookData);
-  }, [params.bookId]);
+  const fetchBook = useFetch(
+    { url: `${config.serverBaseUrl}/books/${params.bookId}` },
+    useCallback((data) => {
+      const bookData = {
+        title: data.title,
+        authorId: data.authorId,
+        series: data.series,
+        releaseDate: new Date(data.releaseDate[0], data.releaseDate[1], data.releaseDate[2]).toLocaleDateString(),
+        isbn: data.isbn,
+        description: data.description
+      };
+      setBook(bookData);
+    }, [])
+  );
 
   const fetchAuthor = useCallback(async () => {
-    if (book.authorId === undefined) return;
-    const response = await fetch(`${config.baseUrl}/resources/authors/${book.authorId}`, {
-      headers: authHeader()
-    });
+    if (book.authorId === undefined) return; // TODO
+    const response = await fetch(`${config.serverBaseUrl}/resources/authors/${book.authorId}`);
     const author = await response.json();
 
     setAuthor(author);
@@ -45,7 +42,7 @@ const BookDetails = () => {
   }, [book.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
       headers: authHeader()
     });
     const hasInStorage = await response.json();
@@ -109,7 +106,7 @@ const BookDetails = () => {
                   </tr>
                   <tr>
                     <th>opis</th>
-                    <td>{book.description ?? 'brak opisu'}</td>
+                    <td>{book.description ?? <i>brak opisu</i>}</td>
                   </tr>
                   <tr>
                     <th>ISBN</th>

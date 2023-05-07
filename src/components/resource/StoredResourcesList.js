@@ -9,7 +9,7 @@ const StoredResourcesList = () => {
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`${config.baseUrl}/storage`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage`, {
       headers: authHeader()
     });
     const data = await response.json();
