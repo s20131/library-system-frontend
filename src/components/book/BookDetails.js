@@ -24,7 +24,11 @@ const BookDetails = () => {
         title: data.title,
         authorId: data.authorId,
         series: data.series,
-        releaseDate: new Date(data.releaseDate[0], data.releaseDate[1], data.releaseDate[2]).toLocaleDateString(),
+        releaseDate: new Date(data.releaseDate[0], data.releaseDate[1], data.releaseDate[2]).toLocaleDateString('pl-PL', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }),
         isbn: data.isbn,
         description: data.description
       };
@@ -36,7 +40,6 @@ const BookDetails = () => {
     if (book.authorId === undefined) return; // TODO
     const response = await fetch(`${config.serverBaseUrl}/resources/authors/${book.authorId}`);
     const author = await response.json();
-
     setAuthor(author);
     setIsLoading(false);
   }, [book.authorId]);
@@ -46,7 +49,6 @@ const BookDetails = () => {
       headers: authHeader()
     });
     const hasInStorage = await response.json();
-
     setHasInStorage(hasInStorage);
   }, [params.bookId]);
 
@@ -61,7 +63,7 @@ const BookDetails = () => {
   }, [fetchBook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
+    await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'post'
     });
@@ -69,7 +71,7 @@ const BookDetails = () => {
   }, [params.bookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`${config.baseUrl}/storage/${params.bookId}`, {
+    await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'delete'
     });
@@ -116,7 +118,7 @@ const BookDetails = () => {
                 </table>
               </div>
             </div>
-            {isAuthenticated && <AvailabilityTable />}
+            {isAuthenticated && <AvailabilityTable resourceId={params.bookId} />}
           </div>
         </>
       }
