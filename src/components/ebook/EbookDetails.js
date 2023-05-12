@@ -21,12 +21,15 @@ const EbookDetails = () => {
       headers: authHeader()
     });
     const ebook = await response.json();
-
     const transformedEbookData = {
       title: ebook.title,
       authorId: ebook.authorId,
       series: ebook.series,
-      releaseDate: new Date(ebook.releaseDate[0], ebook.releaseDate[1], ebook.releaseDate[2]).toLocaleDateString(),
+      releaseDate: new Date(ebook.releaseDate[0], ebook.releaseDate[1], ebook.releaseDate[2]).toLocaleDateString('pl-PL', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }),
       description: ebook.description,
       format: ebook.format,
       size: ebook.size
@@ -123,7 +126,7 @@ const EbookDetails = () => {
                 </table>
               </div>
             </div>
-            {isAuthenticated && <AvailabilityTable />}
+            {isAuthenticated && <AvailabilityTable resourceId={params.ebookId} />}
           </div>
         </>
       }
