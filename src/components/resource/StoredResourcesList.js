@@ -13,7 +13,6 @@ const StoredResourcesList = () => {
       headers: authHeader()
     });
     const data = await response.json();
-
     const transformedData = data.map((resourceData) => {
       return {
         id: resourceData.resource.id,
@@ -39,15 +38,7 @@ const StoredResourcesList = () => {
       {isLoading && <PageTitle>Ładowanie...</PageTitle>}
       {!isLoading &&
         <div className='resources'>
-          {resources.map((resource) => (
-            <ResourceListItem
-              key={resource.id}
-              id={resource.id}
-              title={resource.title}
-              author={resource.author}
-              resource={resource.type}
-            />
-          ))}
+          {resources.map(resource => <ResourceListItem key={resource.id} resource={resource} />)}
         </div>
       }
     </>

@@ -19,7 +19,8 @@ const ResourcesList = (props) => {
       return {
         id: resourceData.resource.id,
         title: resourceData.resource.title,
-        author: resourceData.author.firstName + ' ' + resourceData.author.lastName
+        author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
+        type: props.resource
       };
     });
     setResources(transformedData);
@@ -39,15 +40,7 @@ const ResourcesList = (props) => {
       {isLoading && <PageTitle>Ładowanie...</PageTitle>}
       {!isLoading &&
         <div className='resources'>
-          {resources.map((resource) => (
-            <ResourceListItem
-              key={resource.id}
-              id={resource.id}
-              title={resource.title}
-              author={resource.author}
-              resource={props.resource}
-            />
-          ))}
+          {resources.map(resource => <ResourceListItem key={resource.id} resource={resource} />)}
         </div>
       }
     </>
