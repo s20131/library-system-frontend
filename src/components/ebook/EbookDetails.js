@@ -25,7 +25,7 @@ const EbookDetails = () => {
       title: ebook.title,
       authorId: ebook.authorId,
       series: ebook.series,
-      releaseDate: new Date(ebook.releaseDate[0], ebook.releaseDate[1], ebook.releaseDate[2]).toLocaleDateString('pl-PL', {
+      releaseDate: new Date(ebook.releaseDate[0], ebook.releaseDate[1] - 1, ebook.releaseDate[2]).toLocaleDateString('pl-PL', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
