@@ -12,9 +12,7 @@ const RentalsList = () => {
   const [rentalDates, setRentalDates] = useState(new Set());
 
   const fetchRentals = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/rentals`, {
-      headers: authHeader()
-    });
+    const response = await fetch(`${config.serverBaseUrl}/rentals`, { headers: authHeader() });
     const data = await response.json();
     const transformedData = data.map((rentalData) => {
       return {
@@ -53,27 +51,21 @@ const RentalsList = () => {
       {prolonged.length > 0 && <>
         <SubTitle>aktualnie przedłużone</SubTitle>
         <div className='resources'>
-          {prolonged.map((rental) => (
-            <ResourceListItem key={rental.id} resource={rental} />
-          ))}
+          {prolonged.map((rental) => <ResourceListItem key={rental.id} resource={rental} />)}
         </div>
       </>
       }
       {reservedToBorrow.length > 0 && <>
         <SubTitle>książki czekające na odbiór w bibliotece</SubTitle>
         <div className='resources'>
-          {reservedToBorrow.map((rental) => (
-            <ResourceListItem key={rental.id} resource={rental} />
-          ))}
+          {reservedToBorrow.map((rental) => <ResourceListItem key={rental.id} resource={rental} />)}
         </div>
       </>
       }
       {active.length > 0 && <>
         <SubTitle>aktualnie wypożyczone</SubTitle>
         <div className='resources'>
-          {active.map((rental) => (
-            <ResourceListItem key={rental.id} resource={rental} />
-          ))}
+          {active.map((rental) => <ResourceListItem key={rental.id} resource={rental} />)}
         </div>
       </>
       }
@@ -85,8 +77,8 @@ const RentalsList = () => {
             <h3 style={{ padding: '0 2rem' }}>wypożyczone w dniu {date}</h3>
             <div className='resources'>
               {rentals
-                .filter(rental => getLocaleDateString(rental) === date)
-                .map(rental => <ResourceListItem key={rental.id} resource={rental} />)
+                .filter((rental) => getLocaleDateString(rental) === date)
+                .map((rental) => <ResourceListItem key={rental.id} resource={rental} />)
               }
             </div>
           </>
