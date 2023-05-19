@@ -118,7 +118,7 @@ const BookDetails = () => {
                 </table>
               </div>
             </div>
-            {isAuthenticated && <AvailabilityTable resourceId={params.bookId} />}
+            {isAuthenticated && <AvailabilityTable resourceId={params.bookId} title={book.title} />}
           </div>
         </>
       }

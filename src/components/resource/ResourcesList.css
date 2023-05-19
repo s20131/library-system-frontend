@@ -3,4 +3,21 @@
   padding: 1rem;
   grid-template-columns: repeat(auto-fill, 250px);
   justify-content: space-between;
+  position: relative;
+}
+
+.cancel_button {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: absolute;
+  top: 0;
+  left: 250px;
+  background-color: #499147 !important;
+  color: whitesmoke;
+}
+
+.cancel_button:hover,
+.cancel_button:active {
+  background: #2d642c !important;
+  cursor: pointer;
 }
