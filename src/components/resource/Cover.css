@@ -10,8 +10,24 @@
   height: 200px;
 }
 
+.cover_list img {
+  width: 150px;
+  height: 200px;
+}
+
 .cover_details {
   width: 350px;
   min-width: 350px;
   height: 467px;
+}
+
+.cover_details img {
+  width: 350px;
+  min-width: 350px;
+  height: 467px;
+}
+
+img {
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
 }
