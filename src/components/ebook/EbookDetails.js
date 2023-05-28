@@ -94,7 +94,7 @@ const EbookDetails = () => {
           </div>
           <div className='padded_content'>
             <div className='book_details'>
-              <Cover context='cover_details' />
+              <Cover context='cover_details' resourceId={params.ebookId} />
               <div className='table_container'>
                 <table className='description_table'>
                   <tbody>
