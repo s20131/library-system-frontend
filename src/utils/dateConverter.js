@@ -1,5 +1,9 @@
-const getLocaleDateString = (dateObject) => {
-  return new Date(dateObject.startDate[0], dateObject.startDate[1] - 1, dateObject.startDate[2]).toLocaleDateString();
+const getLocaleDateString = (dateObject, monthOption) => {
+  return new Date(dateObject[0], dateObject[1] - 1, dateObject[2]).toLocaleDateString('pl-PL', {
+    day: '2-digit',
+    month: monthOption ? monthOption : '2-digit',
+    year: 'numeric'
+  });
 };
 
 export default getLocaleDateString;

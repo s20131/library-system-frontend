@@ -3,25 +3,26 @@ import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
 import ResourceListItem from './ResourceListItem';
 import config from '../../config';
+import getResourceType from '../../utils/resourceTypeConverter';
 
 const StoredResourcesList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/storage`, {
-      headers: authHeader()
-    });
-    const data = await response.json();
-    const transformedData = data.map((resourceData) => {
-      return {
-        id: resourceData.resource.id,
-        title: resourceData.resource.title,
-        author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
-        type: resourceData.resourceType.toLowerCase() + 's' // books, ebooks
-      };
-    });
-    setResources(transformedData);
+    const response = await fetch(`${config.serverBaseUrl}/storage`, { headers: authHeader() });
+    if (response.ok) {
+      const data = await response.json();
+      const transformedData = data.map((resourceData) => {
+        return {
+          id: resourceData.resource.id,
+          title: resourceData.resource.title,
+          author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
+          type: getResourceType(resourceData.resourceType)
+        };
+      });
+      setResources(transformedData);
+    }
     setIsLoading(false);
   }, []);
 

@@ -5,7 +5,6 @@ import { authHeader } from '../../utils/auth';
 import config from '../../config';
 import usePosition from '../../hooks/usePosition';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { Alert } from '@mui/material';
 
 const AvailabilityTable = (props) => {
@@ -13,6 +12,7 @@ const AvailabilityTable = (props) => {
   const [libraries, setLibraries] = useState([]);
   const [hasUserInteractions, setHasUserInteractions] = useState(false);
   const [userInfoMessage, setUserInfoMessage] = useState('');
+  const [userWarningMessage, setUserWarningMessage] = useState('');
   const position = usePosition();
 
   const appendCoordinates = useCallback(() => {
@@ -25,55 +25,59 @@ const AvailabilityTable = (props) => {
 
   const fetchLibaries = useCallback(async () => {
       const response = await fetch(`${config.serverBaseUrl}/libraries/copies/${props.resourceId}${appendCoordinates()}`, { headers: authHeader() });
-      const data = await response.json();
-      const transformedData = data.map((library) => {
-        return {
-          id: library.libraryId,
-          name: library.libraryName,
-          address: `ul. ${library.address.streetName} ${library.address.streetNumber}, ${library.address.postcode} ${library.address.city}`,
-          available: library.available,
-          distance: (library.distance / 1000).toFixed(2)
-        };
-      });
-      setLibraries(transformedData);
+      if (response.ok) {
+        const data = await response.json();
+        const transformedData = data.map((library) => {
+          return {
+            id: library.libraryId,
+            name: library.libraryName,
+            address: `ul. ${library.address.streetName} ${library.address.streetNumber}, ${library.address.postcode} ${library.address.city}`,
+            available: library.available,
+            distance: (library.distance / 1000).toFixed(2)
+          };
+        });
+        setLibraries(transformedData);
+      }
       setIsLoading(false);
     }, [props.resourceId, appendCoordinates]
   );
 
   const fetchRentalData = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/rentals/${props.resourceId}`, { headers: authHeader() });
-    const data = await response.json();
-    const transformedData = {
-      rentalStatus: data.rentalStatus,
-      finish: new Date(data.finish[0], data.finish[1] - 1, data.finish[2], data.finish[3], data.finish[4]).toLocaleDateString(),
-      library: data.library,
-      penalty: data.penalty,
-    };
-    // eslint-disable-next-line
-    switch (transformedData.rentalStatus) {
-      case 'ACTIVE':
-        setHasUserInteractions(true);
-        setUserInfoMessage(`Wypożyczyłeś ten przedmiot z ${transformedData.library}, koniec wypożyczenia w dniu ${transformedData.finish}.`);
-        break;
-      case 'RESERVED_TO_BORROW':
-        setHasUserInteractions(true);
-        setUserInfoMessage(`Ten przedmiot czeka na twój odbiór w ${transformedData.library} do dnia ${transformedData.finish}.`);
-        break;
-      case 'PROLONGED':
-        setHasUserInteractions(true);
-        setUserInfoMessage(`Ten przedmiot jest przez ciebie przetrzymywany od dnia ${transformedData.finish}. Prosimy o jego zwrot do ${transformedData.library}. Naliczona kara wynosi obecnie: ${transformedData.penalty}`);
-        break;
+    if (response.ok) {
+      const data = await response.json();
+      const transformedData = {
+        rentalStatus: data.rentalStatus,
+        finish: new Date(data.finish[0], data.finish[1] - 1, data.finish[2], data.finish[3], data.finish[4]).toLocaleDateString(),
+        library: data.library,
+        penalty: data.penalty
+      };
+      // eslint-disable-next-line
+      switch (transformedData.rentalStatus) {
+        case 'ACTIVE':
+          setHasUserInteractions(true);
+          setUserInfoMessage(`Wypożyczyłeś ten przedmiot z ${transformedData.library}, koniec wypożyczenia w dniu ${transformedData.finish}.`);
+          break;
+        case 'RESERVED_TO_BORROW':
+          setHasUserInteractions(true);
+          setUserInfoMessage(`Ten przedmiot czeka na twój odbiór w ${transformedData.library} do dnia ${transformedData.finish}.`);
+          break;
+        case 'PROLONGED':
+          setHasUserInteractions(true);
+          setUserWarningMessage(`Ten przedmiot jest przez ciebie przetrzymywany od dnia ${transformedData.finish}. Prosimy o jego zwrot do ${transformedData.library}. Naliczona kara wynosi obecnie: ${transformedData.penalty.toFixed(2)} zł.`);
+          break;
+      }
     }
   }, [props.resourceId]);
 
   const fetchReservationData = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/reservations/${props.resourceId}`, { headers: authHeader() });
-    const data = await response.json();
-    const transformedData = {
-      finish: new Date(data.finish[0], data.finish[1] - 1, data.finish[2]).toLocaleDateString(),
-      library: data.library
-    };
     if (response.ok) {
+      const data = await response.json();
+      const transformedData = {
+        finish: new Date(data.finish[0], data.finish[1] - 1, data.finish[2]).toLocaleDateString(),
+        library: data.library
+      };
       setHasUserInteractions(true);
       setUserInfoMessage(`Ten przedmiot jest dla ciebie zarezerwowany w ${transformedData.library} do dnia ${transformedData.finish}.`);
     }
@@ -116,6 +120,7 @@ const AvailabilityTable = (props) => {
   return (
     <>
       {userInfoMessage.trim() !== '' && <Alert severity='info'>{userInfoMessage}</Alert>}
+      {userWarningMessage.trim() !== '' && <Alert severity='warning'>{userWarningMessage}</Alert>}
       <h2>dostępność w bibliotekach</h2>
       {isLoading && <h3>Ładowanie...</h3>}
       {!isLoading && libraries.length === 0 && <h2>Wybrany przedmiot nie jest dostępny w żadnej bibliotece</h2>}
@@ -139,7 +144,7 @@ const AvailabilityTable = (props) => {
                 {library.available === 0 &&
                   <Button onClick={() => reserveResourceHandler(library.id)}
                           disabled={hasUserInteractions}
-                          title={hasUserInteractions === true ? 'Ta przedmiot nie może zostać zarezerwowany, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
+                          title={hasUserInteractions === true ? 'Ten przedmiot nie może zostać zarezerwowany, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
                     Zarezerwuj
                   </Button>}
               </td>

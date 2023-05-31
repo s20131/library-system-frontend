@@ -10,20 +10,19 @@ const ResourcesList = (props) => {
   const [resources, setResources] = useState([]);
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`, {
-      headers: authHeader()
-    });
-    const data = await response.json();
-
-    const transformedData = data.map((resourceData) => {
-      return {
-        id: resourceData.resource.id,
-        title: resourceData.resource.title,
-        author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
-        type: props.resource
-      };
-    });
-    setResources(transformedData);
+    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`, { headers: authHeader() });
+    if (response.ok) {
+      const data = await response.json();
+      const transformedData = data.map((resourceData) => {
+        return {
+          id: resourceData.resource.id,
+          title: resourceData.resource.title,
+          author: resourceData.author.firstName + ' ' + resourceData.author.lastName,
+          type: props.resource
+        };
+      });
+      setResources(transformedData);
+    }
     setIsLoading(false);
   }, [props.resource]);
 

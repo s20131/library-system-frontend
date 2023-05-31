@@ -7,8 +7,7 @@ const RentalsPage = () => {
       <PageTitle>Twoje wypożyczenia</PageTitle>
       <RentalsList />
     </>
-  )
-    ;
+  );
 };
 
 export default RentalsPage;
