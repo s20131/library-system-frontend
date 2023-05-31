@@ -1,12 +1,14 @@
 import PageTitle from '../PageTitle';
 import Cover from '../resource/Cover';
-import { useParams, useRouteLoaderData } from 'react-router-dom';
+import { json, useParams, useRouteLoaderData } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import '../book/BookDetails.css';
 import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
 import config from '../../config';
+import { toast } from 'react-toastify';
+import getLocaleDateString from '../../utils/dateConverter';
 
 const EbookDetails = () => {
   const params = useParams();
@@ -17,44 +19,45 @@ const EbookDetails = () => {
   const isAuthenticated = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/ebooks/${params.ebookId}`, {
-      headers: authHeader()
-    });
-    const ebook = await response.json();
-    const transformedEbookData = {
-      title: ebook.title,
-      authorId: ebook.authorId,
-      series: ebook.series,
-      releaseDate: new Date(ebook.releaseDate[0], ebook.releaseDate[1] - 1, ebook.releaseDate[2]).toLocaleDateString('pl-PL', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      }),
-      description: ebook.description,
-      format: ebook.format,
-      size: ebook.size
-    };
-    setEbook(transformedEbookData);
+    const response = await fetch(`${config.serverBaseUrl}/ebooks/${params.ebookId}`, { headers: authHeader() });
+    if (response.ok) {
+      const ebook = await response.json();
+      const transformedEbookData = {
+        title: ebook.title,
+        authorId: ebook.authorId,
+        series: ebook.series,
+        releaseDate: getLocaleDateString(ebook.releaseDate, 'long'),
+        description: ebook.description,
+        format: ebook.format,
+        size: ebook.size
+      };
+      setEbook(transformedEbookData);
+    } else {
+      throw json({ message: 'Podany ebook nie istnieje w bazie' }, { status: 404 });
+    }
   }, [params.ebookId]);
 
   const fetchAuthor = useCallback(async () => {
     if (ebook.authorId === undefined) return;
-    const response = await fetch(`${config.serverBaseUrl}/resources/authors/${ebook.authorId}`, {
-      headers: authHeader()
-    });
-    const author = await response.json();
-
-    setAuthor(author);
-    setIsLoading(false);
+    const response = await fetch(`${config.serverBaseUrl}/resources/authors/${ebook.authorId}`, { headers: authHeader() });
+    if (response.ok) {
+      const author = await response.json();
+      setAuthor(author);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      throw json({ message: 'Podany autor nie istnieje w bazie' }, { status: 404 });
+    }
   }, [ebook.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader()
     });
-    const hasInStorage = await response.json();
-
-    setHasInStorage(hasInStorage);
+    if (response.ok) {
+      const hasInStorage = await response.json();
+      setHasInStorage(hasInStorage);
+    }
   }, [params.ebookId]);
 
   useEffect(() => {
@@ -68,18 +71,25 @@ const EbookDetails = () => {
   }, [fetchEbook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'post'
     });
+    if (response.ok) {
+      setHasInStorage(true);
+      toast.success('Pomyślnie dodano do schowka.');
+    }
   }, [params.ebookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.ebookId}`, {
       headers: authHeader(),
       method: 'delete'
     });
-    setHasInStorage(false);
+    if (response.ok) {
+      setHasInStorage(false);
+      toast.success('Pomyślnie usunięto ze schowka.');
+    }
   }, [params.ebookId]);
 
   return (

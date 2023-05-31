@@ -2,6 +2,7 @@ import './AuthForm.css';
 import { Form, redirect, useSearchParams } from 'react-router-dom';
 import ActionPart from './ActionPart';
 import config from '../../config';
+import { toast } from 'react-toastify';
 
 const AuthForm = () => {
   const [params] = useSearchParams();
@@ -43,7 +44,7 @@ export const action = async ({ request }) => {
   const queryParams = new URL(request.url).searchParams;
   const data = await request.formData();
   if (queryParams.get('mode') === 'register') {
-    await fetch(`${config.serverBaseUrl}/auth/register`, {
+    const response = await fetch(`${config.serverBaseUrl}/auth/register`, {
       method: request.method,
       headers: {
         'Content-Type': 'application/json'
@@ -56,9 +57,12 @@ export const action = async ({ request }) => {
         password: data.get('password')
       })
     });
-    // TODO handle error response
-
-    return redirect('/auth?mode=login');
+    if (response.ok) {
+      return redirect('/auth?mode=login');
+    } else {
+      toast.error('Niepoprawne dane - za słabe hasło lub email jest już zajęty');
+      return null;
+    }
   } else {
     const username = data.get('username');
     const password = data.get('password');
@@ -77,9 +81,9 @@ export const action = async ({ request }) => {
       const encodedUser = window.btoa(username + ':' + password);
       localStorage.setItem('user', encodedUser);
       return redirect('/books');
+    } else {
+      toast.error('Bład logowania - wprowadzono niepoprawne dane');
+      return null;
     }
-    // TODO handle error response
-
-    return null;
   }
 };

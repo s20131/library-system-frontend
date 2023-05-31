@@ -5,28 +5,34 @@ import PageTitle from '../PageTitle';
 import ResourceListItem from './ResourceListItem';
 import SubTitle from '../SubTitle';
 import getLocaleDateString from '../../utils/dateConverter';
+import getResourceType from '../../utils/resourceTypeConverter';
 
 const RentalsList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [rentals, setRentals] = useState([]);
-  const [rentalDates, setRentalDates] = useState(new Set());
+  const [rentalDates, setRentalDates] = useState([]);
 
   const fetchRentals = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/rentals`, { headers: authHeader() });
-    const data = await response.json();
-    const transformedData = data.map((rentalData) => {
-      return {
-        id: rentalData.resource.id,
-        title: rentalData.resource.title,
-        author: rentalData.author.firstName + ' ' + rentalData.author.lastName,
-        startDate: rentalData.startDate,
-        rentalStatus: rentalData.rentalStatus,
-        type: rentalData.resourceType.toLowerCase() + 's'  // books, ebooks
-      };
-    });
-    setRentals(transformedData);
-    const dates = transformedData.map(data => getLocaleDateString(data));
-    setRentalDates(new Set(dates));
+    if (response.ok) {
+      const data = await response.json();
+      const transformedData = data.map((rentalData) => {
+        return {
+          id: rentalData.resource.id,
+          title: rentalData.resource.title,
+          author: rentalData.author.firstName + ' ' + rentalData.author.lastName,
+          startDate: rentalData.startDate,
+          rentalStatus: rentalData.rentalStatus,
+          type: getResourceType(rentalData.resourceType)
+        };
+      });
+      setRentals(transformedData);
+      const dates = transformedData
+        .map(data => getLocaleDateString(data.startDate))
+        .filter((val, idx, arr) => arr.indexOf(val) === idx)
+        .sort((a, b) => b.localeCompare(a));
+      setRentalDates(dates);
+    }
     setIsLoading(false);
   }, []);
 
@@ -49,7 +55,7 @@ const RentalsList = () => {
   return (
     <>
       {prolonged.length > 0 && <>
-        <SubTitle>aktualnie przedłużone</SubTitle>
+        <SubTitle>aktualnie przetrzymywane</SubTitle>
         <div className='resources'>
           {prolonged.map((rental) => <ResourceListItem key={rental.id} resource={rental} />)}
         </div>
@@ -70,14 +76,13 @@ const RentalsList = () => {
       </>
       }
       {rentals.length > 0 && <SubTitle>wszystkie</SubTitle>}
-      {[...rentalDates]
-        .sort((a, b) => b.localeCompare(a))
+      {rentalDates
         .map(date => (
           <>
             <h3 style={{ padding: '0 2rem' }}>wypożyczone w dniu {date}</h3>
             <div className='resources'>
               {rentals
-                .filter((rental) => getLocaleDateString(rental) === date)
+                .filter((rental) => getLocaleDateString(rental.startDate) === date)
                 .map((rental) => <ResourceListItem key={rental.id} resource={rental} />)
               }
             </div>

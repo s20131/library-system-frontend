@@ -6,7 +6,7 @@ import ResourceListItem from './ResourceListItem';
 import SubTitle from '../SubTitle';
 import Button from '../UI/button/Button';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import getResourceType from '../../utils/resourceTypeConverter';
 
 const ReservationsList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,17 +14,19 @@ const ReservationsList = () => {
 
   const fetchReservations = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/reservations`, { headers: authHeader() });
-    const data = await response.json();
-    const transformedData = data.map((reservationData) => {
-      return {
-        id: reservationData.resource.id,
-        title: reservationData.resource.title,
-        author: reservationData.author.firstName + ' ' + reservationData.author.lastName,
-        finishDate: new Date(reservationData.finishDate[0], reservationData.finishDate[1], reservationData.finishDate[2]),
-        type: reservationData.resourceType.toLowerCase() + 's'  // books, ebooks
-      };
-    });
-    setReservations(transformedData);
+    if (response.ok) {
+      const data = await response.json();
+      const transformedData = data.map((reservationData) => {
+        return {
+          id: reservationData.resource.id,
+          title: reservationData.resource.title,
+          author: reservationData.author.firstName + ' ' + reservationData.author.lastName,
+          finishDate: new Date(reservationData.finishDate[0], reservationData.finishDate[1], reservationData.finishDate[2]),
+          type: getResourceType(reservationData.resourceType)
+        };
+      });
+      setReservations(transformedData);
+    }
     setIsLoading(false);
   }, []);
 
@@ -87,8 +89,8 @@ const ReservationsList = () => {
       <SubTitle>wygasające w ciągu 1 miesiąca</SubTitle>
       <div className='resources'>
         {rest.map((reservation) =>
-          <div>
-            <ResourceListItem key={reservation.id} resource={reservation}></ResourceListItem>
+          <div key={reservation.id}>
+            <ResourceListItem resource={reservation}></ResourceListItem>
             <Button title='Anuluj rezerwację' onClick={() => deleteReservationHandler(reservation.id)}
                     className='cancel_button'>X</Button>
           </div>

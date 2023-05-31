@@ -2,12 +2,14 @@ import PageTitle from '../PageTitle';
 import Cover from '../resource/Cover';
 import './BookDetails.css';
 import { useCallback, useEffect, useState } from 'react';
-import { useParams, useRouteLoaderData } from 'react-router-dom';
+import { json, useParams, useRouteLoaderData } from 'react-router-dom';
 import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
 import config from '../../config';
 import useFetch from '../../hooks/useFetch';
+import { toast } from 'react-toastify';
+import getLocaleDateString from '../../utils/dateConverter';
 
 const BookDetails = () => {
   const params = useParams();
@@ -24,11 +26,7 @@ const BookDetails = () => {
         title: data.title,
         authorId: data.authorId,
         series: data.series,
-        releaseDate: new Date(data.releaseDate[0], data.releaseDate[1], data.releaseDate[2]).toLocaleDateString('pl-PL', {
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric'
-        }),
+        releaseDate: getLocaleDateString(data.releaseDate, 'long'),
         isbn: data.isbn,
         description: data.description
       };
@@ -39,17 +37,22 @@ const BookDetails = () => {
   const fetchAuthor = useCallback(async () => {
     if (book.authorId === undefined) return; // TODO
     const response = await fetch(`${config.serverBaseUrl}/resources/authors/${book.authorId}`);
-    const author = await response.json();
-    setAuthor(author);
-    setIsLoading(false);
+    if (response.ok) {
+      const author = await response.json();
+      setAuthor(author);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      throw json({ message: 'Podany autor nie istnieje w bazie' }, { status: 404 });
+    }
   }, [book.authorId]);
 
   const fetchHasInStorage = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
-      headers: authHeader()
-    });
-    const hasInStorage = await response.json();
-    setHasInStorage(hasInStorage);
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, { headers: authHeader() });
+    if (response.ok) {
+      const hasInStorage = await response.json();
+      setHasInStorage(hasInStorage);
+    }
   }, [params.bookId]);
 
   useEffect(() => {
@@ -63,19 +66,25 @@ const BookDetails = () => {
   }, [fetchBook, fetchAuthor, isAuthenticated, fetchHasInStorage]);
 
   const addToStorageHandler = useCallback(async () => {
-    await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'post'
     });
-    setHasInStorage(true);
+    if (response.ok) {
+      setHasInStorage(true);
+      toast.success('Pomyślnie dodano do schowka.');
+    }
   }, [params.bookId]);
 
   const removeFromStorageHandler = useCallback(async () => {
-    await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
+    const response = await fetch(`${config.serverBaseUrl}/storage/${params.bookId}`, {
       headers: authHeader(),
       method: 'delete'
     });
-    setHasInStorage(false);
+    if (response.ok) {
+      setHasInStorage(false);
+      toast.success('Pomyślnie usunięto ze schowka.');
+    }
   }, [params.bookId]);
 
   return (
