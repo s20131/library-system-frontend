@@ -1,16 +1,15 @@
 import ResourceListItem from './ResourceListItem';
 import './ResourcesList.css';
-import { useCallback, useEffect, useState } from 'react';
-import { authHeader } from '../../utils/auth';
+import { useCallback, useEffect } from 'react';
 import PageTitle from '../PageTitle';
 import config from '../../config';
 
 const ResourcesList = (props) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [resources, setResources] = useState([]);
+  const { isLoading, setIsLoading } = props.loadingState;
+  const { resources, setResources } = props.resourceState;
 
   const fetchResources = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`, { headers: authHeader() });
+    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`);
     if (response.ok) {
       const data = await response.json();
       const transformedData = data.map((resourceData) => {
@@ -31,7 +30,11 @@ const ResourcesList = (props) => {
   }, [fetchResources]);
 
   if (resources.length === 0 && !isLoading) {
-    return <h2 className='padded_content'>Nie znaleziono żadnych {props.resource === 'books' ? 'książek' : 'ebooków'}.</h2>;
+    return (
+      <h2 className='padded_content'>
+        Nie znaleziono żadnych {props.resource === 'books' ? 'książek' : 'ebooków'}.
+      </h2>
+    );
   }
 
   return (
