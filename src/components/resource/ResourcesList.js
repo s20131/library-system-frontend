@@ -23,7 +23,7 @@ const ResourcesList = (props) => {
       setResources(transformedData);
     }
     setIsLoading(false);
-  }, [props.resource]);
+  }, [props.resource, setIsLoading, setResources]);
 
   useEffect(() => {
     void fetchResources();

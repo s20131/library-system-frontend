@@ -15,3 +15,29 @@
 .button:focus {
   outline: none;
 }
+
+.cancel_button {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: absolute;
+  top: 0;
+  background-color: #499147 !important;
+  color: whitesmoke;
+}
+
+.cancel_button:hover,
+.cancel_button:active {
+  background: #2d642c !important;
+}
+
+.info_button {
+  background-color: cornflowerblue;
+  border: 1px solid #1E598CFF;
+  color: whitesmoke;
+  margin-left: 1rem;
+}
+
+.info_button:hover,
+.info_button:active {
+  background: #1E598CFF;
+}

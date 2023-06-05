@@ -9,7 +9,7 @@ const ResourceListItem = (props) => {
     // TODO link inside card
     <Link style={{ textDecoration: 'none' }} to={`/${props.resource.type}/${props.resource.id}`}>
       <Card className={`resource_list_item ${props.resource.type === 'ebooks' ? 'ebook_list_item' : undefined}`}>
-        <Cover context='cover_list' resourceId={props.resource.id} />
+        <Cover context='cover_list' resourceId={props.resource.id} title={props.resource.title} />
         <ShortDescription title={props.resource.title} author={props.resource.author} />
       </Card>
     </Link>
