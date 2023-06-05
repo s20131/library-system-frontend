@@ -28,7 +28,7 @@ const RentalsList = () => {
       });
       setRentals(transformedData);
       const dates = transformedData
-        .map(data => getLocaleDateString(data.startDate))
+        .map(data => getLocaleDateString(data.startDate, {}))
         .filter((val, idx, arr) => arr.indexOf(val) === idx)
         .sort((a, b) => b.localeCompare(a));
       setRentalDates(dates);
@@ -82,7 +82,7 @@ const RentalsList = () => {
             <h3 style={{ padding: '0 2rem' }}>wypożyczone w dniu {date}</h3>
             <div className='resources'>
               {rentals
-                .filter((rental) => getLocaleDateString(rental.startDate) === date)
+                .filter((rental) => getLocaleDateString(rental.startDate, {}) === date)
                 .map((rental) => <ResourceListItem key={rental.id} resource={rental} />)
               }
             </div>

@@ -9,10 +9,8 @@ const Cover = (props) => {
   const fetchCover = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/resources/${props.resourceId}/cover`);
     if (response.ok) {
-      const cover = await response.arrayBuffer();
-      const contentType = response.headers.get('Content-Type')
-      const coverBlob = new Blob([cover], { type: contentType })
-      const coverUrl = URL.createObjectURL(coverBlob)
+      const cover = await response.blob();
+      const coverUrl = URL.createObjectURL(cover)
       setCover(coverUrl);
     }
   }, [props.resourceId]);
@@ -23,7 +21,7 @@ const Cover = (props) => {
 
   return (
     <Card className={`cover ${props.context}`}>
-      {cover && <img src={cover} alt='resource cover' />}
+      {cover && <img src={cover} alt={`${props.title} cover`} />}
     </Card>)
     ;
 };

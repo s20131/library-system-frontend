@@ -26,7 +26,7 @@ const BookDetails = () => {
         title: data.title,
         authorId: data.authorId,
         series: data.series,
-        releaseDate: getLocaleDateString(data.releaseDate, 'long'),
+        releaseDate: getLocaleDateString(data.releaseDate, { day: 'numeric', month: 'long' }),
         isbn: data.isbn,
         description: data.description
       };
@@ -127,7 +127,7 @@ const BookDetails = () => {
                 </table>
               </div>
             </div>
-            {isAuthenticated && <AvailabilityTable resourceId={params.bookId} title={book.title} />}
+            {isAuthenticated && <AvailabilityTable resourceId={params.bookId} title={book.title} resourceType='book' />}
           </div>
         </>
       }

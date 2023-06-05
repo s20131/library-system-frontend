@@ -119,7 +119,12 @@ const AvailabilityTable = (props) => {
 
   return (
     <>
-      {userInfoMessage.trim() !== '' && <Alert severity='info'>{userInfoMessage}</Alert>}
+      {userInfoMessage.trim() !== '' && props.resourceType === 'book' && <Alert severity='info'>{userInfoMessage}</Alert>}
+      {userInfoMessage.trim() !== '' && props.resourceType === 'ebook' && (
+        <Alert severity='info'>{userInfoMessage}
+          <Button className='info_button' onClick={props.downloadHandler}>Pobierz</Button>
+        </Alert>
+      )}
       {userWarningMessage.trim() !== '' && <Alert severity='warning'>{userWarningMessage}</Alert>}
       <h2>dostępność w bibliotekach</h2>
       {isLoading && <h3>Ładowanie...</h3>}
@@ -130,7 +135,7 @@ const AvailabilityTable = (props) => {
           {libraries.map((library) => (
             <tr key={library.id}>
               <th>{library.name}</th>
-              {/*TODO what if library is close to the user*/}
+              {/* TODO what if library is close to the user */}
               {Math.floor(library.distance) === 0 && <td>{library.address}</td>}
               {Math.floor(library.distance) !== 0 && <td>{library.address} ({library.distance} km)</td>}
               <td>{library.available} szt.</td>
