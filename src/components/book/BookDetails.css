@@ -15,7 +15,7 @@
 
 .description_table {
   border-collapse: collapse;
-  width: 50%;
+  width: 70%;
 }
 
 .description_table th, td {
@@ -23,6 +23,7 @@
 }
 
 .description_table th {
+  width: 7rem;
   text-align: right;
 }
 

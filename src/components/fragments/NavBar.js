@@ -3,13 +3,14 @@ import { logout } from '../../utils/auth';
 import { Link, useRouteLoaderData } from 'react-router-dom';
 
 const NavBar = () => {
-  const isAuthenticated = useRouteLoaderData('root');
+  const { auth: isAuthenticated, librarian: isLibrarian } = useRouteLoaderData('root');
   return (
     <header>
       <h1>System biblioteczny</h1>
       <nav>
         <ul>
           <NavItem title='Strona główna' path='/' />
+          {isLibrarian && <NavItem title='Bibliotekarz' path='/librarian' />}
           <NavItem title='Książki' path='/books' />
           <NavItem title='E-booki' path='/ebooks' />
           {isAuthenticated &&

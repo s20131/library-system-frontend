@@ -3,6 +3,7 @@ import { Form, redirect, useSearchParams } from 'react-router-dom';
 import ActionPart from './ActionPart';
 import config from '../../config';
 import { toast } from 'react-toastify';
+import { rolesKey, userKey } from '../../utils/auth';
 
 const AuthForm = () => {
   const [params] = useSearchParams();
@@ -79,7 +80,9 @@ export const action = async ({ request }) => {
 
     if (response.ok) {
       const encodedUser = window.btoa(username + ':' + password);
-      localStorage.setItem('user', encodedUser);
+      localStorage.setItem(userKey, encodedUser);
+      const roles = await response.json()
+      localStorage.setItem(rolesKey, JSON.stringify(roles))
       return redirect('/books');
     } else {
       toast.error('Bład logowania - wprowadzono niepoprawne dane');

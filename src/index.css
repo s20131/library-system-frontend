@@ -95,3 +95,8 @@ h2 {
 h3 {
   font-size: 1.3em;
 }
+
+select {
+  border-radius: 6px;
+  height: 2rem;
+}
