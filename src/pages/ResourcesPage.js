@@ -33,8 +33,8 @@ const ResourcesPage = (props) => {
       <PageTitle>{`Polecane ${title}`}</PageTitle>
       <SearchBar searchHandler={searchHandler} />
       <ResourcesList resource={props.resource}
-                     resourceState={{ resources: resources, setResources: setResources }}
-                     loadingState={{ isLoading: isLoading, setIsLoading: setIsLoading }}
+                     resourceState={{ resources, setResources }}
+                     loadingState={{ isLoading, setIsLoading }}
       />
     </>
   );
