@@ -23,7 +23,6 @@ const LibraryCardSection = (props) => {
     void fetchLibraryCard();
   }, [fetchLibraryCard]);
 
-  // TODO shared loader
   if (isLoading) {
     return <PageTitle>Ładowanie...</PageTitle>;
   }

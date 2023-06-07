@@ -7,7 +7,7 @@ const ActionPart = (props) => {
     return (
       <div className='actions'>
         <p>Nie masz jeszcze konta?&nbsp;
-          <Link type='button' to='?mode=register'>Zarejestruj się</Link>
+          <Link type='button' to='?mode=register'><b>Zarejestruj się</b></Link>
         </p>
         <Button type='submit'>Zaloguj się</Button>
       </div>
@@ -16,7 +16,7 @@ const ActionPart = (props) => {
     return (
       <div className='actions'>
         <p>Masz już konto?&nbsp;
-          <Link type='button' to='?mode=login'>Zaloguj się</Link>
+          <Link type='button' to='?mode=login'><b>Zaloguj się</b></Link>
         </p>
         <Button type='submit'>Zarejestruj się</Button>
       </div>

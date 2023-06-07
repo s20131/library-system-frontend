@@ -17,8 +17,9 @@ const BookDetails = () => {
   const [book, setBook] = useState({});
   const [author, setAuthor] = useState({});
   const [hasInStorage, setHasInStorage] = useState(false);
-  const isAuthenticated = useRouteLoaderData('root');
+  const { auth: isAuthenticated } = useRouteLoaderData('root');
 
+  // TODO remove custom hook?
   const fetchBook = useFetch(
     { url: `${config.serverBaseUrl}/books/${params.bookId}` },
     useCallback((data) => {
@@ -99,7 +100,7 @@ const BookDetails = () => {
           </div>
           <div className='padded_content'>
             <div className='book_details'>
-              <Cover context='cover_details' resourceId={params.bookId} />
+              <Cover context='cover_details' resourceId={params.bookId} title={book.title} />
               <div className='table_container'>
                 <table className='description_table'>
                   <tbody>

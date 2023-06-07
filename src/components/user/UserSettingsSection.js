@@ -35,19 +35,19 @@ const UserSettingsSection = (props) => {
         <h2 className='h2-title'>ustawienia użytkownika</h2>
         <div>
           <div>
-            <label className='label setting'>
+            <label className='setting'>
               <input type='checkbox' checked={userSettings.sendEndOfRentalReminder} disabled className='checkbox' />
               wysyłaj przypomnienie o końcu wypożyczenia
             </label>
           </div>
           <div>
-            <label className='label setting'>
+            <label className='setting'>
               <input type='checkbox' checked={userSettings.sendWhenAvailableReminder} disabled className='checkbox' />
               wysyłaj przypomnienie, kiedy obserwowana książka jest dostępna
             </label>
           </div>
           <div>
-            <label className='label setting'>
+            <label className='setting'>
               {/* TODO additional T/F property */}
               <input type='checkbox' checked={false} disabled className='checkbox' />
               wysyłaj ebooki prosto na czytnik elektroniczny

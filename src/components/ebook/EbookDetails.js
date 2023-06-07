@@ -16,7 +16,7 @@ const EbookDetails = () => {
   const [ebook, setEbook] = useState({});
   const [author, setAuthor] = useState({});
   const [hasInStorage, setHasInStorage] = useState(false);
-  const isAuthenticated = useRouteLoaderData('root');
+  const { auth: isAuthenticated } = useRouteLoaderData('root');
 
   const fetchEbook = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/ebooks/${params.ebookId}`);
