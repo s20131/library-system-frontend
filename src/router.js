@@ -13,6 +13,7 @@ import RentalsPage from './pages/RentalsPage';
 import AccountPage from './pages/AccountPage';
 import ReservationsPage from './pages/ReservationsPage';
 import LibrarianPage from './pages/librarian/LibrarianPage';
+import CompleteBookRentalPage from './pages/librarian/CompleteBookRentalPage';
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,8 @@ const router = createBrowserRouter([
       { path: 'reservations', element: <ReservationsPage />, loader: checkAuthLoader },
       { path: 'rentals', element: <RentalsPage />, loader: checkAuthLoader },
       { path: 'account', element: <AccountPage />, loader: checkAuthLoader },
-      { path: 'librarian', element: <LibrarianPage />, loader: checkLibrarianRoleLoader }
+      { path: 'librarian', element: <LibrarianPage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/rentals/complete', element: <CompleteBookRentalPage />, loader: checkLibrarianRoleLoader }
     ]
   }
 ]);
