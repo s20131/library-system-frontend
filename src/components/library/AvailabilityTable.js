@@ -10,6 +10,7 @@ import { Alert } from '@mui/material';
 const AvailabilityTable = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [libraries, setLibraries] = useState([]);
+  const [isReserved, setIsReserved] = useState(false);
   const [hasUserInteractions, setHasUserInteractions] = useState(false);
   const [userInfoMessage, setUserInfoMessage] = useState('');
   const [userWarningMessage, setUserWarningMessage] = useState('');
@@ -79,6 +80,7 @@ const AvailabilityTable = (props) => {
         library: data.library
       };
       setHasUserInteractions(true);
+      setIsReserved(true);
       setUserInfoMessage(`Ten przedmiot jest dla ciebie zarezerwowany w ${transformedData.library} do dnia ${transformedData.finish}.`);
     }
   }, [props.resourceId]);
@@ -103,8 +105,11 @@ const AvailabilityTable = (props) => {
         return library;
       }));
       toast.success(`Pomyślnie wypożyczono '${props.title}'. Miłego czytania!`);
+      await fetchRentalData();
+    } else {
+      toast.error('Nie można było wypożyczyć przedmiotu. Prawdopodobnie zbyt wiele osób ma go zarezerwowane.');
     }
-  }, [props.resourceId, props.title]);
+  }, [props.resourceId, props.title, fetchRentalData]);
 
   const reserveResourceHandler = useCallback(async (libraryId) => {
     const response = await fetch(`${config.serverBaseUrl}/libraries/${libraryId}/reservations/${props.resourceId}`, {
@@ -113,13 +118,15 @@ const AvailabilityTable = (props) => {
     });
     if (response.ok) {
       setHasUserInteractions(true);
-      toast.success(`Pomyślnie zarezerwowano '${props.title}'. Powiadomimy cię, gdy ten przedmiot znów stanie się dostępny!`);
+      toast.success(`Pomyślnie zarezerwowano '${props.title}'. Będziesz miał pierwszeństwo w wypożyczeniu tego przedmiotu, gdy znów stanie się dostępny!`);
+      await fetchReservationData();
     }
-  }, [props.resourceId, props.title]);
+  }, [props.resourceId, props.title, fetchReservationData]);
 
   return (
     <>
-      {userInfoMessage.trim() !== '' && props.resourceType === 'book' && <Alert severity='info'>{userInfoMessage}</Alert>}
+      {userInfoMessage.trim() !== '' && props.resourceType === 'book' &&
+        <Alert severity='info'>{userInfoMessage}</Alert>}
       {userInfoMessage.trim() !== '' && props.resourceType === 'ebook' && (
         <Alert severity='info'>{userInfoMessage}
           <Button className='info_button' onClick={props.downloadHandler}>Pobierz</Button>
@@ -142,14 +149,14 @@ const AvailabilityTable = (props) => {
               <td>
                 {library.available > 0 &&
                   <Button onClick={() => borrowResourceHandler(library.id)}
-                          disabled={hasUserInteractions}
-                          title={hasUserInteractions === true ? 'Ten przedmiot nie może zostać wypożyczony, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
+                          disabled={isReserved ? false : hasUserInteractions}
+                          title={isReserved ? '' : (hasUserInteractions ? 'Ten przedmiot nie może zostać wypożyczony, ponieważ już go wypożyczasz lub rezerwujesz' : '')}>
                     Wypożycz
                   </Button>}
                 {library.available === 0 &&
                   <Button onClick={() => reserveResourceHandler(library.id)}
                           disabled={hasUserInteractions}
-                          title={hasUserInteractions === true ? 'Ten przedmiot nie może zostać zarezerwowany, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
+                          title={hasUserInteractions ? 'Ten przedmiot nie może zostać zarezerwowany, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
                     Zarezerwuj
                   </Button>}
               </td>
