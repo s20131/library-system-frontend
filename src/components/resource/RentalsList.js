@@ -75,7 +75,8 @@ const RentalsList = () => {
         </div>
       </>
       }
-      {rentals.length > 0 && <SubTitle>wszystkie</SubTitle>}
+      {active.length === 0 && <SubTitle>Nie masz obecnie żadnych wypożyczonych przedmiotów.</SubTitle>}
+      {rentals.length > 0 && <SubTitle>historia wypożyczeń</SubTitle>}
       {rentalDates
         .map(date => (
           <>

@@ -81,13 +81,12 @@ const LibrarianPage = () => {
           <h2>Obsługa klienta</h2>
           <li><h3><Link to='/librarian/rentals'>Wypożycz książkę czytelnikowi</Link></h3></li>
           <li><h3><Link to='/librarian/rentals/complete'>Dokończ proces wypożyczenia</Link></h3></li>
-          <li><h3><Link to='/librarian/rentals/terminate'>Dokonaj zwrotu</Link></h3></li>
+          <li><h3><Link to='/librarian/rentals/return'>Dokonaj zwrotu książki</Link></h3></li>
         </ul>
         <ul className='padded_content librarian-list card' style={{ marginRight: '2rem' }}>
           <h2>Czynności administracyjne</h2>
           <li><h3><Link to='/librarian/availability'>Zmień liczbę dostępności zasobu</Link></h3></li>
-          <li><h3><Link to='/librarian/books'>Dodaj książkę</Link></h3></li>
-          <li><h3><Link to='/librarian/ebooks'>Dodaj ebooka</Link></h3></li>
+          <li><h3><Link to='/librarian/new-resource'>Dodaj nowy zasób</Link></h3></li>
         </ul>
       </div>
     </>
