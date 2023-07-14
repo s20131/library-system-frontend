@@ -62,10 +62,8 @@ const ReturnBookPage = () => {
           status: rental.status,
           penalty: rental.penalty
         });
-      } else if ((await response.json()).code === 'RENTAL_NOT_ACTIVE') {
-        toast.error('Brak aktywnego wypożyczenia');
       } else {
-        toast.error('Wystąpił błąd w trakcie pobierania informacji o wypożyczeniu książki');
+        toast.error('Wystąpił błąd w trakcie pobierania informacji o wypożyczeniu książki. Takie wypożyczenie nie istnieje lub należy zmienić wybraną bibliotekę.');
       }
     }, [isbn, cardNumber]);
 
@@ -73,7 +71,7 @@ const ReturnBookPage = () => {
       event.preventDefault();
       if (!isbn || !cardNumber) return;
       const library = localStorage.getItem('library');
-      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/return?cardNumber=${cardNumber}`, {
+      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/status/${isbn}/return?cardNumber=${cardNumber}?statusStrategy=FINISH`, {
         headers: authHeader(),
         method: 'put'
       });
@@ -81,20 +79,62 @@ const ReturnBookPage = () => {
         toast.success('Pomyślnie zwrócono książkę');
         navigate('/librarian');
       } else {
-        toast.error('Wystąpił błąd w trakcie pobierania informacji o wypożyczeniu książki');
+        toast.error('Wystąpił błąd w trakcie pobierania informacji o wypożyczeniu książki. Takie wypożyczenie nie istnieje lub należy zmienić wybraną bibliotekę.');
+      }
+    }, [isbn, cardNumber, navigate]);
+
+    const handlePayment = useCallback(async (event) => {
+      event.preventDefault();
+      const id = toast.loading('Oczekiwanie na odpowiedź systemu płatności...');
+      const library = localStorage.getItem('library');
+      // mimic payment system...
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/status?cardNumber=${cardNumber}&statusStrategy=PAY_OFF`, {
+        headers: authHeader(),
+        method: 'put'
+      });
+      if (response.ok) {
+        toast.update(id, {
+          render: 'Pomyślnie opłacono karę i zwrócono książkę',
+          type: 'success',
+          isLoading: false,
+          autoClose: 5000
+        });
+        navigate('/librarian');
+      } else {
+        toast.update(id, {
+          render: 'Wystąpił błąd w trakcie płatności, spróbuj ponownie',
+          type: 'error',
+          isLoading: false,
+          autoClose: 5000
+        });
+      }
+    }, [isbn, cardNumber, navigate]);
+
+    const handleCancellation = useCallback(async (event) => {
+      event.preventDefault();
+      if (!isbn || !cardNumber) return;
+      const library = localStorage.getItem('library');
+      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/status?cardNumber=${cardNumber}&statusStrategy=CANCEL`, {
+        headers: authHeader(),
+        method: 'put'
+      });
+      if (response.ok) {
+        toast.success('Pomyślnie anulowano rezerwację książki');
+        navigate('/librarian');
+      } else {
+        toast.error('Wystąpił błąd w trakcie pobierania informacji o rezerwacji książki. Taka rezerwacja nie istnieje lub należy zmienić wybraną bibliotekę.');
       }
     }, [isbn, cardNumber, navigate]);
 
     const displayInfoMessage = () => {
       switch (rentalInfo.status) {
         case 'ACTIVE':
-          if (!rentalInfo.penalty)
-            return `wypożyczenie trwa do ${rentalInfo.finish}`;
-          else {
-            return `wypożyczenie książki jest przedłużone od ${rentalInfo.finish}, naliczona kara wynosi ${(rentalInfo.penalty).toFixed(2)} PLN`;
-          }
+          return `wypożyczenie trwa do ${rentalInfo.finish}`;
         case 'RESERVED_TO_BORROW':
           return `książka jest zarezerwowana do ${rentalInfo.finish}`;
+        case 'PROLONGED':
+          return `wypożyczenie zakończyło się ${rentalInfo.finish}, naliczona kara wynosi ${(rentalInfo.penalty).toFixed(2)} PLN`;
         default :
           return 'nie znaleziono aktywnego wypożyczenia';
       }
@@ -138,10 +178,11 @@ const ReturnBookPage = () => {
             {user && <p style={{ marginTop: 0, marginBottom: '2rem' }}><i>{user.name}</i></p>}
             <Button type='submit'>Sprawdź</Button>
             {rentalInfo && <p style={{ marginLeft: 'auto' }}>{displayInfoMessage()}</p>}
-            {rentalInfo && rentalInfo.status === 'ACTIVE' && !rentalInfo.penalty &&
-              <Button onClick={handleBookReturn}>Zwróć</Button>}
-            {rentalInfo && rentalInfo.status === 'ACTIVE' && rentalInfo.penalty && <Button>Opłać i zwróć</Button>}
-            {rentalInfo && rentalInfo.status === 'RESERVED_TO_BORROW' && <Button>Anuluj wypożyczenie</Button>}
+            {rentalInfo && rentalInfo.status === 'ACTIVE' && <Button onClick={handleBookReturn}>Zwróć</Button>}
+            {rentalInfo && rentalInfo.status === 'PROLONGED' && rentalInfo.penalty &&
+              <Button onClick={handlePayment}>Opłać i zwróć</Button>}
+            {rentalInfo && rentalInfo.status === 'RESERVED_TO_BORROW' &&
+              <Button onClick={handleCancellation}>Anuluj wypożyczenie</Button>}
           </form>
         </div>
       </>
