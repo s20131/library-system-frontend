@@ -16,17 +16,18 @@ const CompleteBookRentalPage = () => {
     const cardNumber = cardNumberInput.current.value;
     const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals?cardNumber=${cardNumber}`, { headers: authHeader() });
     if (response.ok) {
-      const rentals = await response.json();
-      const transformedRentals = rentals.map((rental) => {
+      const books = await response.json();
+      const transformedBooks = books.map((book) => {
         return {
-          id: rental.id,
-          title: rental.title
+          id: book.id,
+          title: book.title,
+          isbn: book.isbn
         };
       });
-      if (transformedRentals.length === 0) {
+      if (transformedBooks.length === 0) {
         toast.success('Brak książek do wypożyczenia z wybranej biblioteki');
       }
-      setAwaitingBooks(transformedRentals);
+      setAwaitingBooks(transformedBooks);
     } else {
       toast.error('Podana karta nie istnieje lub jest nieaktywna');
     }
@@ -34,14 +35,15 @@ const CompleteBookRentalPage = () => {
 
   const handleCompletionOfBookRental = useCallback(async (event) => {
     event.preventDefault();
-    const bookId = awaitingBookOption.current.value;
+    const library = localStorage.getItem('library');
+    const bookIsbn = awaitingBookOption.current.value;
     const cardNumber = cardNumberInput.current.value;
-    const response = await fetch(`${config.serverBaseUrl}/rentals/${bookId}?cardNumber=${cardNumber}`, {
+    const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${bookIsbn}/status?cardNumber=${cardNumber}&statusStrategy=START`, {
       headers: authHeader(),
       method: 'put'
     });
     if (response.ok) {
-      setAwaitingBooks((prevState) => prevState.filter((book) => book.id !== bookId));
+      setAwaitingBooks((prevState) => prevState.filter((book) => book.isbn !== bookIsbn));
       toast.success('Pomyślnie wypożyczono książkę');
     } else {
       toast.error('Wystąpił błąd w trakcie wypożyczania książki');
@@ -77,7 +79,7 @@ const CompleteBookRentalPage = () => {
                     style={{ marginBottom: '1rem' }}
             >
               {awaitingBooks.map((awaitingBook) => (
-                <option key={awaitingBook.id} value={awaitingBook.id}>{awaitingBook.title}</option>
+                <option key={awaitingBook.id} value={awaitingBook.isbn}>{awaitingBook.title}</option>
               ))}
             </select>
             <Button type='submit'>Wypożycz</Button>
