@@ -80,6 +80,10 @@ input {
   background-color: whitesmoke;
 }
 
+input[type="text"]:disabled {
+  background-color: rgb(206, 222, 203);
+}
+
 .padded_content {
   padding: 0 2rem 2rem;
 }
