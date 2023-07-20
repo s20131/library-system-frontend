@@ -16,6 +16,8 @@ import LibrarianPage from './pages/librarian/LibrarianPage';
 import CompleteBookRentalPage from './pages/librarian/CompleteBookRentalPage';
 import BorrowBookForCustomerPage from './pages/librarian/BorrowBookForCustomerPage';
 import ReturnBookPage from './pages/librarian/ReturnBookPage';
+import AddNewResourcePage from './pages/librarian/AddNewResourcePage';
+import AddNewBookPage from './pages/librarian/AddNewBookPage';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,8 @@ const router = createBrowserRouter([
       { path: 'librarian/rentals', element: <BorrowBookForCustomerPage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/rentals/complete', element: <CompleteBookRentalPage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/rentals/return', element: <ReturnBookPage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/resources/add', element: <AddNewResourcePage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/resources/add/book', element: <AddNewBookPage />, loader: checkLibrarianRoleLoader },
     ]
   }
 ]);

@@ -71,7 +71,7 @@ const BorrowBookForCustomerPage = () => {
       <PageTitle>Wypożyczanie książki czytelnikowi</PageTitle>
       <div className='wrapper' style={{ marginLeft: '2rem' }}>
         <form onSubmit={handleBookRental} className='padded_content login_form' style={{ maxWidth: '500px' }}>
-          <label htmlFor='card-number'>
+          <label htmlFor='isbn'>
             Numer ISBN książki
             <input id='isbn'
                    type='text'
