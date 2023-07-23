@@ -5,15 +5,15 @@ import { authHeader } from '../../utils/auth';
 import { toast } from 'react-toastify';
 import Button from '../../components/UI/button/Button';
 
-const ChangeBooksAvailabilityPage = () => {
-  const [books, setBooks] = useState([]);
-  const bookOption = useRef();
+const ChangeResourcesAvailabilityPage = (props) => {
+  const [resources, setResources] = useState([]);
+  const resourcesOption = useRef();
   const [availability, setAvailability] = useState();
   const availabilityInput = useRef();
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchBooks = useCallback(async () => {
-    const response = await fetch(`${config.serverBaseUrl}/books`);
+  const fetchResources = useCallback(async () => {
+    const response = await fetch(`${config.serverBaseUrl}/${props.resource}`);
     if (response.ok) {
       const data = await response.json();
       const transformedData = data.map((resourceData) => {
@@ -23,16 +23,16 @@ const ChangeBooksAvailabilityPage = () => {
           author: resourceData.author.firstName + ' ' + resourceData.author.lastName
         };
       });
-      setBooks(transformedData);
+      setResources(transformedData);
     }
   }, []);
 
   const fetchAvailability = useCallback(async () => {
-    const book = bookOption.current.value;
-    if (!book) return;
+    const resourceId = resourcesOption.current.value;
+    if (!resourceId) return;
     setIsLoading(true);
     const library = localStorage.getItem('library');
-    const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/copies/${book}/availability`, { headers: authHeader() });
+    const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/copies/${resourceId}/availability`, { headers: authHeader() });
     if (response.ok) {
       const data = await response.json();
       setAvailability(data);
@@ -42,45 +42,48 @@ const ChangeBooksAvailabilityPage = () => {
     setIsLoading(false);
   }, []);
 
-  const handleAvailabilityChange = useCallback(async (event) => {
+  const handleAvailabilitySave = useCallback(async (event) => {
     event.preventDefault();
-    const book = bookOption.current.value;
+    const resourceId = resourcesOption.current.value;
     const availability = availabilityInput.current.value;
-    if (!book || !availability) return;
+    if (!resourceId || !availability) return;
     const library = localStorage.getItem('library');
-    const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/copies/${book}/availability?newValue=${availability}`, {
+    const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/copies/${resourceId}/availability?newValue=${availability}`, {
       headers: authHeader(),
       method: 'put'
     });
     if (!response.ok) {
-      toast.error('Nie można było zmienić dostępności');
+      toast.error('Nie można było zmienić dostępności przedmiotu');
     }
     toast.success('Pomyślnie zaktualizowano dostępność przedmiotu');
   }, []);
 
   useEffect(() => {
-    void fetchBooks();
+    void fetchResources();
     void fetchAvailability();
-  }, [fetchBooks, fetchAvailability]);
+  }, [fetchResources, fetchAvailability]);
 
-  // todo set availability after changing
+  const handleAvailabilityChange = (input) => {
+    setAvailability(input.target.value);
+  };
+
   return (
     <>
-      <PageTitle>Zmień liczbę dostępności książek</PageTitle>
+      <PageTitle>Zmień liczbę dostępności {props.resource === 'books' ? 'książek' : 'ebooków'}</PageTitle>
       <div className='wrapper' style={{ marginLeft: '2rem' }}>
-        <form onSubmit={handleAvailabilityChange} className='padded_content login_form' style={{ maxWidth: '500px' }}>
-          <label>Wybierz książkę</label>
-          <select name='books'
-                  id='books'
-                  ref={bookOption}
+        <form onSubmit={handleAvailabilitySave} className='padded_content login_form' style={{ maxWidth: '500px' }}>
+          <label>Wybierz {props.resource === 'books' ? 'książkę' : 'ebooka'}</label>
+          <select name='resources'
+                  id='resources'
+                  ref={resourcesOption}
                   style={{ marginBottom: '1rem' }}
                   onChange={fetchAvailability}
           >
-            {books.map((book) => (
-              <option key={book.id} value={book.id}>{book.title}, {book.author}</option>
+            {resources.map((resource) => (
+              <option key={resource.id} value={resource.id}>{resource.title}, {resource.author}</option>
             ))}
           </select>
-          {books.length > 0 && (
+          {resources.length > 0 && (
             <>
               <label>Zmień dostępność</label>
               {isLoading && <p>Ładowanie...</p>}
@@ -88,7 +91,9 @@ const ChangeBooksAvailabilityPage = () => {
                 <>
                   <input type='number' id='availability' name='availability' min='0'
                          ref={availabilityInput}
-                         defaultValue={availability} />
+                         value={availability}
+                         onChange={handleAvailabilityChange}
+                  />
                   <Button type='submit'>Zapisz</Button>
                 </>
               )}
@@ -100,4 +105,4 @@ const ChangeBooksAvailabilityPage = () => {
   );
 };
 
-export default ChangeBooksAvailabilityPage;
+export default ChangeResourcesAvailabilityPage;
