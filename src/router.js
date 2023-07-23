@@ -18,6 +18,8 @@ import BorrowBookForCustomerPage from './pages/librarian/BorrowBookForCustomerPa
 import ReturnBookPage from './pages/librarian/ReturnBookPage';
 import AddNewResourcePage from './pages/librarian/AddNewResourcePage';
 import AddNewBookPage from './pages/librarian/AddNewBookPage';
+import ChangeAvailabilityPage from './pages/librarian/ChangeAvailabilityPage';
+import ChangeBooksAvailabilityPage from './pages/librarian/ChangeBooksAvailabilityPage';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,9 @@ const router = createBrowserRouter([
       { path: 'librarian/rentals', element: <BorrowBookForCustomerPage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/rentals/complete', element: <CompleteBookRentalPage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/rentals/return', element: <ReturnBookPage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/resources/availability', element: <ChangeAvailabilityPage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/resources/availability/books', element: <ChangeBooksAvailabilityPage />, loader: checkLibrarianRoleLoader },
+      //{ path: 'librarian/resources/availability/ebooks', element: <ChangeAvailabilityPage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/resources/add', element: <AddNewResourcePage />, loader: checkLibrarianRoleLoader },
       { path: 'librarian/resources/add/book', element: <AddNewBookPage />, loader: checkLibrarianRoleLoader },
     ]

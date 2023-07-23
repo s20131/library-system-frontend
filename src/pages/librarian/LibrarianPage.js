@@ -85,7 +85,7 @@ const LibrarianPage = () => {
         </ul>
         <ul className='padded_content librarian-list card' style={{ marginRight: '2rem' }}>
           <h2>Czynności administracyjne</h2>
-          <li><h3><Link to='/librarian/availability'>Zmień dostępność zasobu</Link></h3></li>
+          <li><h3><Link to='/librarian/resources/availability'>Zmień dostępność zasobu</Link></h3></li>
           <li><h3><Link to='/librarian/resources/add'>Dodaj nowy zasób</Link></h3></li>
         </ul>
       </div>

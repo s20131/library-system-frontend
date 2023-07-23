@@ -33,7 +33,7 @@ const AvailabilityTable = (props) => {
             id: library.libraryId,
             name: library.libraryName,
             address: `ul. ${library.address.streetName} ${library.address.streetNumber}, ${library.address.postcode} ${library.address.city}`,
-            available: library.available,
+            availability: library.availability,
             distance: (library.distance / 1000).toFixed(2)
           };
         });
@@ -100,7 +100,7 @@ const AvailabilityTable = (props) => {
       setHasUserInteractions(true);
       setLibraries((prevState) => prevState.map((library) => {
         if (library.id === libraryId) {
-          library.available--;
+          library.availability--;
         }
         return library;
       }));
@@ -145,15 +145,15 @@ const AvailabilityTable = (props) => {
               {/* TODO what if library is close to the user */}
               {Math.floor(library.distance) === 0 && <td>{library.address}</td>}
               {Math.floor(library.distance) !== 0 && <td>{library.address} ({library.distance} km)</td>}
-              <td>{library.available} szt.</td>
+              <td>{library.availability} szt.</td>
               <td>
-                {library.available > 0 &&
+                {library.availability > 0 &&
                   <Button onClick={() => borrowResourceHandler(library.id)}
                           disabled={isReserved ? false : hasUserInteractions}
                           title={isReserved ? '' : (hasUserInteractions ? 'Ten przedmiot nie może zostać wypożyczony, ponieważ już go wypożyczasz lub rezerwujesz' : '')}>
                     Wypożycz
                   </Button>}
-                {library.available === 0 &&
+                {library.availability === 0 &&
                   <Button onClick={() => reserveResourceHandler(library.id)}
                           disabled={hasUserInteractions}
                           title={hasUserInteractions ? 'Ten przedmiot nie może zostać zarezerwowany, ponieważ już go wypożyczasz lub rezerwujesz' : ''}>
