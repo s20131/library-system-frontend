@@ -72,7 +72,7 @@ const CompleteBookRentalPage = () => {
                 className='padded_content login_form'
                 style={{ marginTop: '2rem' }}
           >
-            <label>Wybierz książkę do dokończenia procesu wypożyczenia</label>
+            <label>Wybierz książkę do wypożyczenia</label>
             <select name='awaiting-books'
                     id='awaiting-books'
                     ref={awaitingBookOption}
