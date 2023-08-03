@@ -4,6 +4,7 @@ import PageTitle from '../PageTitle';
 import ResourceListItem from './ResourceListItem';
 import config from '../../config';
 import getResourceType from '../../utils/resourceTypeConverter';
+import { toast } from 'react-toastify';
 
 const StoredResourcesList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +23,8 @@ const StoredResourcesList = () => {
         };
       });
       setResources(transformedData);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o zachowanych przedmiotach');
     }
     setIsLoading(false);
   }, []);
@@ -31,7 +34,7 @@ const StoredResourcesList = () => {
   }, [fetchResources]);
 
   if (resources.length === 0 && !isLoading) {
-    return <h2 className='padded_content'>Nie znaleziono żadnych zachowanych zasobów.</h2>;
+    return <h2 className='padded_content'>Nie znaleziono żadnych zachowanych przedmiotów.</h2>;
   }
 
   return (

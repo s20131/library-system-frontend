@@ -3,6 +3,7 @@ import './ResourcesList.css';
 import { useCallback, useEffect } from 'react';
 import PageTitle from '../PageTitle';
 import config from '../../config';
+import { toast } from 'react-toastify';
 
 const ResourcesList = (props) => {
   const { isLoading, setIsLoading } = props.loadingState;
@@ -21,6 +22,8 @@ const ResourcesList = (props) => {
         };
       });
       setResources(transformedData);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o dostępnych przedmiotach');
     }
     setIsLoading(false);
   }, [props.resource, setIsLoading, setResources]);

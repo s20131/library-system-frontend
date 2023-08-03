@@ -10,7 +10,7 @@ import { json, redirect } from 'react-router-dom';
 const AddNewBookPage = () => {
   const titleInput = useRef();
   const [seriesChecked, setSeriesChecked] = useState(true);
-  const seriesCheckedRef = useRef()
+  const seriesCheckedRef = useRef();
   const seriesInput = useRef();
   const seriesListOption = useRef();
   const [authorChecked, setAuthorChecked] = useState(false);
@@ -37,6 +37,8 @@ const AddNewBookPage = () => {
         };
       });
       setSeries(transformedData.sort((a, b) => a.series > b.series ? 1 : -1));
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o dostępnych seriach');
     }
   }, []);
 
@@ -52,6 +54,8 @@ const AddNewBookPage = () => {
         };
       });
       setAuthors(transformedData.sort((a, b) => a.lastName > b.lastName ? 1 : -1));
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o dostępnych autorach');
     }
   }, []);
 
@@ -63,13 +67,13 @@ const AddNewBookPage = () => {
   const handleBookCreation = useCallback(async (event) => {
     event.preventDefault();
     toastId = toast.loading('Zapisywanie książki w bazie danych...');
-    const seriesChecked = seriesCheckedRef.current.checked
+    const seriesChecked = seriesCheckedRef.current.checked;
     if (seriesChecked && seriesInput.current.value && !series.includes(seriesInput.current.value)) {
       await addSeries(seriesInput.current.value);
     }
 
     let authorId;
-    const authorChecked = authorCheckedRef.current.checked
+    const authorChecked = authorCheckedRef.current.checked;
     if (authorChecked) {
       authorId = await addAuthor({
         firstName: authorFirstNameInput.current.value,

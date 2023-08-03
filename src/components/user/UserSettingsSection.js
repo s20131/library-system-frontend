@@ -3,6 +3,7 @@ import config from '../../config';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
 import './UserSettings.css';
+import { toast } from 'react-toastify';
 
 const UserSettingsSection = (props) => {
   const [userSettings, setUserSettings] = useState({});
@@ -17,6 +18,8 @@ const UserSettingsSection = (props) => {
         sendWhenAvailableReminder: settings.sendWhenAvailableReminder,
         kindleEmail: settings.kindleEmail
       });
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o ustawieniach użytkownika');
     }
     setIsLoading(false);
   }, [setIsLoading]);
@@ -51,7 +54,8 @@ const UserSettingsSection = (props) => {
               {/* TODO additional T/F property */}
               <input type='checkbox' checked={false} disabled className='checkbox' />
               wysyłaj ebooki prosto na czytnik elektroniczny
-              <input id='reader-mail' type='text' name='reader-mail' value={userSettings.kindleEmail ?? ''} placeholder='adres mailowy twojego czytnika' disabled />
+              <input id='reader-mail' type='text' name='reader-mail' value={userSettings.kindleEmail ?? ''}
+                     placeholder='adres mailowy twojego czytnika' disabled />
             </label>
           </div>
         </div>

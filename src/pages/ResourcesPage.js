@@ -3,6 +3,7 @@ import PageTitle from '../components/PageTitle';
 import SearchBar from '../components/resource/SearchBar';
 import { useCallback, useState } from 'react';
 import config from '../config';
+import { toast } from 'react-toastify';
 
 const ResourcesPage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +25,8 @@ const ResourcesPage = (props) => {
         };
       });
       setResources(transformedData);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o przedmiotach');
     }
     setIsLoading(false);
   }, [props.resource]);

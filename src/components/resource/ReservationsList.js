@@ -26,6 +26,8 @@ const ReservationsList = () => {
         };
       });
       setReservations(transformedData);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o aktualnych rezerwacjach');
     }
     setIsLoading(false);
   }, []);
@@ -44,6 +46,8 @@ const ReservationsList = () => {
     if (response.ok) {
       toast.success('Pomyślnie anulowano rezerwację.');
       setReservations((prevState) => prevState.filter((reservation) => reservation.id !== resourceId));
+    } else {
+      toast.error('Wystąpił błąd w trakcie anulowania rezerwacji');
     }
   }, []);
 

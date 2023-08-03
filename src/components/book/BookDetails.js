@@ -7,7 +7,6 @@ import { authHeader } from '../../utils/auth';
 import AvailabilityTable from '../library/AvailabilityTable';
 import Button from '../UI/button/Button';
 import config from '../../config';
-import useFetch from '../../hooks/useFetch';
 import { toast } from 'react-toastify';
 import getLocaleDateString from '../../utils/dateConverter';
 
@@ -19,24 +18,26 @@ const BookDetails = () => {
   const [hasInStorage, setHasInStorage] = useState(false);
   const { auth: isAuthenticated } = useRouteLoaderData('root');
 
-  // TODO remove custom hook?
-  const fetchBook = useFetch(
-    { url: `${config.serverBaseUrl}/books/${params.bookId}` },
-    useCallback((data) => {
+  const fetchBook = useCallback(async () => {
+    const response = await fetch(`${config.serverBaseUrl}/books/${params.bookId}`);
+    if (response.ok) {
+      const book = await response.json()
       const bookData = {
-        title: data.title,
-        authorId: data.authorId,
-        series: data.series,
-        releaseDate: getLocaleDateString(data.releaseDate, { day: 'numeric', month: 'long' }),
-        isbn: data.isbn,
-        description: data.description
+        title: book.title,
+        authorId: book.authorId,
+        series: book.series,
+        releaseDate: getLocaleDateString(book.releaseDate, { day: 'numeric', month: 'long' }),
+        isbn: book.isbn,
+        description: book.description
       };
       setBook(bookData);
-    }, [])
-  );
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o książce');
+    }
+  }, [params.bookId]);
 
   const fetchAuthor = useCallback(async () => {
-    if (book.authorId === undefined) return; // TODO
+    if (book.authorId === undefined) return;
     const response = await fetch(`${config.serverBaseUrl}/resources/authors/${book.authorId}`);
     if (response.ok) {
       const author = await response.json();
@@ -44,6 +45,7 @@ const BookDetails = () => {
       setIsLoading(false);
     } else {
       setIsLoading(false);
+      toast.error('Wystąpił błąd w trakcie pobierania danych o autorze');
       throw json({ message: 'Podany autor nie istnieje w bazie' }, { status: 404 });
     }
   }, [book.authorId]);
@@ -74,6 +76,8 @@ const BookDetails = () => {
     if (response.ok) {
       setHasInStorage(true);
       toast.success('Pomyślnie dodano do schowka.');
+    } else {
+      toast.error('Wystąpił błąd w trakcie dodawania książki do schowka');
     }
   }, [params.bookId]);
 
@@ -85,6 +89,8 @@ const BookDetails = () => {
     if (response.ok) {
       setHasInStorage(false);
       toast.success('Pomyślnie usunięto ze schowka.');
+    } else {
+      toast.error('Wystąpił błąd w trakcie usuwania książki ze schowka');
     }
   }, [params.bookId]);
 

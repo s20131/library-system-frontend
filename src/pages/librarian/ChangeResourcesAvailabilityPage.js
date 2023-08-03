@@ -24,6 +24,8 @@ const ChangeResourcesAvailabilityPage = (props) => {
         };
       });
       setResources(transformedData);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o dostępnych przedmiotach');
     }
   }, []);
 
@@ -52,10 +54,11 @@ const ChangeResourcesAvailabilityPage = (props) => {
       headers: authHeader(),
       method: 'put'
     });
-    if (!response.ok) {
+    if (response.ok) {
+      toast.success('Pomyślnie zaktualizowano dostępność przedmiotu');
+    } else {
       toast.error('Nie można było zmienić dostępności przedmiotu');
     }
-    toast.success('Pomyślnie zaktualizowano dostępność przedmiotu');
   }, []);
 
   useEffect(() => {
