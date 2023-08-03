@@ -10,7 +10,7 @@ const Cover = (props) => {
     const response = await fetch(`${config.serverBaseUrl}/resources/${props.resourceId}/cover`);
     if (response.ok) {
       const cover = await response.blob();
-      const coverUrl = URL.createObjectURL(cover)
+      const coverUrl = URL.createObjectURL(cover);
       setCover(coverUrl);
     }
   }, [props.resourceId]);
@@ -22,8 +22,8 @@ const Cover = (props) => {
   return (
     <Card className={`cover ${props.context}`}>
       {cover && <img src={cover} alt={`${props.title} cover`} />}
-    </Card>)
-    ;
+    </Card>
+  );
 };
 
 export default Cover;

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import config from '../../config';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
+import { toast } from 'react-toastify';
 
 const UserDataSection = (props) => {
   const [user, setUser] = useState({});
@@ -15,6 +16,8 @@ const UserDataSection = (props) => {
         name: user.firstName + ' ' + user.lastName,
         email: user.email
       });
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o użytkowniku');
     }
     setIsLoading(false);
   }, [setIsLoading]);

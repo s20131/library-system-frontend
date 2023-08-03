@@ -25,7 +25,7 @@ const CompleteBookRentalPage = () => {
         };
       });
       if (transformedBooks.length === 0) {
-        toast.success('Brak książek do wypożyczenia z wybranej biblioteki');
+        toast.info('Brak książek do wypożyczenia z wybranej biblioteki');
       }
       setAwaitingBooks(transformedBooks);
     } else {

@@ -38,6 +38,8 @@ const AvailabilityTable = (props) => {
           };
         });
         setLibraries(transformedData);
+      } else {
+        toast.error('Wystąpił błąd w trakcie pobierania danych o bibliotekach');
       }
       setIsLoading(false);
     }, [props.resourceId, appendCoordinates]
@@ -120,6 +122,8 @@ const AvailabilityTable = (props) => {
       setHasUserInteractions(true);
       toast.success(`Pomyślnie zarezerwowano '${props.title}'. Będziesz miał pierwszeństwo w wypożyczeniu tego przedmiotu, gdy znów stanie się dostępny!`);
       await fetchReservationData();
+    } else {
+      toast.error('Wystąpił błąd w trakcie rezerwacji tego przedmiotu');
     }
   }, [props.resourceId, props.title, fetchReservationData]);
 

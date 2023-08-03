@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import config from '../../config';
 import { authHeader } from '../../utils/auth';
 import PageTitle from '../PageTitle';
+import { toast } from 'react-toastify';
 
 const LibraryCardSection = (props) => {
   const [libraryCard, setLibraryCard] = useState({});
@@ -15,6 +16,8 @@ const LibraryCardSection = (props) => {
         number: card.cardNumber,
         expiration: card.expiration
       });
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o karcie bibliotecznej');
     }
     setIsLoading(false);
   }, [setIsLoading]);

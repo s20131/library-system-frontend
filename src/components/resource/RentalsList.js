@@ -6,6 +6,7 @@ import ResourceListItem from './ResourceListItem';
 import SubTitle from '../SubTitle';
 import getLocaleDateString from '../../utils/dateConverter';
 import getResourceType from '../../utils/resourceTypeConverter';
+import { toast } from 'react-toastify';
 
 const RentalsList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +33,8 @@ const RentalsList = () => {
         .filter((val, idx, arr) => arr.indexOf(val) === idx)
         .sort((a, b) => b.localeCompare(a));
       setRentalDates(dates);
+    } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o aktualnych wypożyczeniach');
     }
     setIsLoading(false);
   }, []);
@@ -75,7 +78,8 @@ const RentalsList = () => {
         </div>
       </>
       }
-      {active.length === 0 && <SubTitle>Nie masz obecnie żadnych wypożyczonych przedmiotów.</SubTitle>}
+      {active.length === 0 && reservedToBorrow.length === 0 &&
+        <SubTitle>Nie masz obecnie żadnych wypożyczonych przedmiotów.</SubTitle>}
       {rentals.length > 0 && <SubTitle>historia wypożyczeń</SubTitle>}
       {rentalDates
         .map(date => (

@@ -54,7 +54,7 @@ const ReturnBookPage = () => {
       event.preventDefault();
       if (!isbn || !cardNumber) return;
       const library = localStorage.getItem('library');
-      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/return?cardNumber=${cardNumber}`, { headers: authHeader() });
+      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/status?cardNumber=${cardNumber}`, { headers: authHeader() });
       if (response.ok) {
         const rental = await response.json();
         setRentalInfo({
@@ -71,7 +71,7 @@ const ReturnBookPage = () => {
       event.preventDefault();
       if (!isbn || !cardNumber) return;
       const library = localStorage.getItem('library');
-      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/status/${isbn}/return?cardNumber=${cardNumber}?statusStrategy=FINISH`, {
+      const response = await fetch(`${config.serverBaseUrl}/libraries/${library}/librarian/rentals/${isbn}/status?cardNumber=${cardNumber}&statusStrategy=FINISH`, {
         headers: authHeader(),
         method: 'put'
       });

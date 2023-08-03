@@ -33,6 +33,7 @@ const EbookDetails = () => {
       };
       setEbook(transformedEbookData);
     } else {
+      toast.error('Wystąpił błąd w trakcie pobierania danych o ebooku');
       throw json({ message: 'Podany ebook nie istnieje w bazie' }, { status: 404 });
     }
   }, [params.ebookId]);
@@ -46,6 +47,7 @@ const EbookDetails = () => {
       setIsLoading(false);
     } else {
       setIsLoading(false);
+      toast.error('Wystąpił błąd w trakcie pobierania danych o autorze');
       throw json({ message: 'Podany autor nie istnieje w bazie' }, { status: 404 });
     }
   }, [ebook.authorId]);
@@ -78,6 +80,8 @@ const EbookDetails = () => {
     if (response.ok) {
       setHasInStorage(true);
       toast.success('Pomyślnie dodano do schowka.');
+    } else {
+      toast.error('Wystąpił błąd w trakcie dodawania ebooka do schowka');
     }
   }, [params.ebookId]);
 
@@ -89,6 +93,8 @@ const EbookDetails = () => {
     if (response.ok) {
       setHasInStorage(false);
       toast.success('Pomyślnie usunięto ze schowka.');
+    } else {
+      toast.error('Wystąpił błąd w trakcie usuwania ebooka ze schowka');
     }
   }, [params.ebookId]);
 
