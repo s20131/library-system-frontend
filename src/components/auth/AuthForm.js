@@ -59,9 +59,10 @@ export const action = async ({ request }) => {
       })
     });
     if (response.ok) {
+      toast.success('Pomyślnie utworzono konto')
       return redirect('/auth?mode=login');
     } else {
-      toast.error('Niepoprawne dane - za słabe hasło lub email jest już zajęty');
+      toast.error('Hasło musi mieć przynajmniej 8 znaków lub adres email może być już zajęty');
       return null;
     }
   } else {
