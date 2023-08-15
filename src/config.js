@@ -1,5 +1,6 @@
 const config = {
-  serverBaseUrl: 'http://3.64.60.121/api'
+  serverBaseUrl: process.env.REACT_APP_BACKEND_URL,
+  googleApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
 };
 
 export default config;
