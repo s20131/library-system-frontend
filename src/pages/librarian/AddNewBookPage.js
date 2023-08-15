@@ -62,7 +62,7 @@ const AddNewBookPage = () => {
   useEffect(() => {
     void fetchSeries();
     void fetchAuthors();
-  }, [fetchSeries]);
+  }, [fetchSeries, fetchAuthors]);
 
   const handleBookCreation = useCallback(async (event) => {
     event.preventDefault();
