@@ -27,7 +27,7 @@ const ChangeResourcesAvailabilityPage = (props) => {
     } else {
       toast.error('Wystąpił błąd w trakcie pobierania danych o dostępnych przedmiotach');
     }
-  }, []);
+  }, [props.resource]);
 
   const fetchAvailability = useCallback(async () => {
     const resourceId = resourcesOption.current.value;
