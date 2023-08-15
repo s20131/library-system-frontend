@@ -25,7 +25,7 @@ const AddNewBookPage = () => {
 
   const [series, setSeries] = useState([]);
   const [authors, setAuthors] = useState([]);
-  let toastId;
+  const toastId = useRef(null);
 
   const fetchSeries = useCallback(async () => {
     const response = await fetch(`${config.serverBaseUrl}/resources/series`);
@@ -64,9 +64,67 @@ const AddNewBookPage = () => {
     void fetchAuthors();
   }, [fetchSeries, fetchAuthors]);
 
+  const addAuthor = useCallback(async (author) => {
+    const response = await fetch(`${config.serverBaseUrl}/resources/authors`, {
+      headers: { ...authHeader(), 'Content-Type': 'application/json' },
+      method: 'post',
+      body: JSON.stringify(author)
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+    showError('autora');
+    throw json({ message: 'Could not create author' }, { status: 400 });
+  }, []);
+
+  const addBook = useCallback(async (book) => {
+    const response = await fetch(`${config.serverBaseUrl}/books`, {
+      headers: { ...authHeader(), 'Content-Type': 'application/json' },
+      method: 'post',
+      body: JSON.stringify({
+        title: book.title,
+        authorId: book.authorId,
+        releaseDate: book.releaseDate,
+        description: book.description,
+        series: book.series,
+        isbn: book.isbn
+      })
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+    showError('książki');
+    throw json({ message: 'Could not create book' }, { status: 400 });
+  }, []);
+
+  const addCover = useCallback(async (bookId, cover) => {
+    const bytes = await cover.arrayBuffer();
+    const contentType = cover.type;
+    const response = await fetch(`${config.serverBaseUrl}/resources/${bookId}/cover`, {
+      headers: { ...authHeader(), 'Content-Type': contentType },
+      method: 'post',
+      body: bytes
+    });
+    if (!response.ok) {
+      showWarning();
+    }
+  }, []);
+
+  const addSeries = useCallback(async (series) => {
+    const response = await fetch(`${config.serverBaseUrl}/resources/series`, {
+      headers: authHeader(),
+      method: 'post',
+      body: series
+    });
+    if (!response.ok) {
+      showError('serii');
+      throw json({ message: 'Could not create series' }, { status: 400 });
+    }
+  }, []);
+
   const handleBookCreation = useCallback(async (event) => {
     event.preventDefault();
-    toastId = toast.loading('Zapisywanie książki w bazie danych...');
+    toastId.current = toast.loading('Zapisywanie książki w bazie danych...');
     const seriesChecked = seriesCheckedRef.current.checked;
     if (seriesChecked && seriesInput.current.value && !series.includes(seriesInput.current.value)) {
       await addSeries(seriesInput.current.value);
@@ -99,76 +157,19 @@ const AddNewBookPage = () => {
     if (cover) {
       await addCover(bookId, cover);
     }
-    toast.update(toastId, {
+    toast.update(toastId.current, {
       render: 'Pomyślnie zapisano książkę w bazie danych. ' +
         'Aby była widoczna w publicznym katalogu, należy poczekać na akceptację administratora.',
       type: 'success',
       isLoading: false,
       autoClose: 5000
     });
+    // TODO doesn't work
     return redirect('/librarian');
-  }, []);
-
-  const addSeries = async (series) => {
-    const response = await fetch(`${config.serverBaseUrl}/resources/series`, {
-      headers: authHeader(),
-      method: 'post',
-      body: series
-    });
-    if (!response.ok) {
-      showError('serii');
-      throw json({ message: 'Could not create series' }, { status: 400 });
-    }
-  };
-
-  const addAuthor = async (author) => {
-    const response = await fetch(`${config.serverBaseUrl}/resources/authors`, {
-      headers: { ...authHeader(), 'Content-Type': 'application/json' },
-      method: 'post',
-      body: JSON.stringify(author)
-    });
-    if (response.ok) {
-      return await response.json();
-    }
-    showError('autora');
-    throw json({ message: 'Could not create author' }, { status: 400 });
-  };
-
-  const addBook = async (book) => {
-    const response = await fetch(`${config.serverBaseUrl}/books`, {
-      headers: { ...authHeader(), 'Content-Type': 'application/json' },
-      method: 'post',
-      body: JSON.stringify({
-        title: book.title,
-        authorId: book.authorId,
-        releaseDate: book.releaseDate,
-        description: book.description,
-        series: book.series,
-        isbn: book.isbn
-      })
-    });
-    if (response.ok) {
-      return await response.json();
-    }
-    showError('książki');
-    throw json({ message: 'Could not create book' }, { status: 400 });
-  };
-
-  const addCover = async (bookId, cover) => {
-    const bytes = await cover.arrayBuffer();
-    const contentType = cover.type;
-    const response = await fetch(`${config.serverBaseUrl}/resources/${bookId}/cover`, {
-      headers: { ...authHeader(), 'Content-Type': contentType },
-      method: 'post',
-      body: bytes
-    });
-    if (!response.ok) {
-      showWarning();
-    }
-  };
+  }, [addAuthor, addBook, addCover, addSeries, series]);
 
   const showError = (item) => {
-    toast.update(toastId, {
+    toast.update(toastId.current, {
       render: `Wystąpił błąd w trakcie dodawania ${item} do systemu`,
       type: 'error',
       isLoading: false,
@@ -177,7 +178,7 @@ const AddNewBookPage = () => {
   };
 
   const showWarning = () => {
-    toast.update(toastId, {
+    toast.update(toastId.current, {
       render: 'Wystąpił błąd w trakcie zapisywania okładki, ale dane książki zostały zapisane poprawnie',
       type: 'warning',
       isLoading: false,
