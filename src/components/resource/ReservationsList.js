@@ -21,7 +21,7 @@ const ReservationsList = () => {
           id: reservationData.resource.id,
           title: reservationData.resource.title,
           author: reservationData.author.firstName + ' ' + reservationData.author.lastName,
-          finishDate: new Date(reservationData.finishDate[0], reservationData.finishDate[1], reservationData.finishDate[2]),
+          finishDate: new Date(reservationData.finishDate[0], reservationData.finishDate[1] - 1, reservationData.finishDate[2]),
           type: getResourceType(reservationData.resourceType)
         };
       });
@@ -59,18 +59,22 @@ const ReservationsList = () => {
     return <PageTitle>Ładowanie...</PageTitle>;
   }
 
-  const today = new Date();
-  const expiringInOneDay = reservations.filter((reservation) => {
-    const tmpRes = new Date(reservation.finishDate);
-    tmpRes.setDate(tmpRes.getDate() + 1);
-    return today.getTime() >= tmpRes.getTime();
+
+  const expiringInOneDay = reservations.filter((r) => {
+    const resFinish = new Date(r.finishDate);
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    today.setHours(0, 0, 0, 0);
+    return today.getTime() >= resFinish.getTime();
   });
-  const expiringInOneWeek = reservations.filter((reservation) => {
-    const tmpRes = new Date(reservation.finishDate);
-    tmpRes.setDate(tmpRes.getDate() + 7);
-    return today.getTime() >= tmpRes.getTime();
-  });
-  const rest = reservations.filter((reservation) => !expiringInOneDay.includes(reservation) || !expiringInOneWeek.includes(reservation));
+  const expiringInOneWeek = reservations.filter((r) => {
+    const resFinish = new Date(r.finishDate);
+    const today = new Date();
+    today.setDate(today.getDate() + 7);
+    today.setHours(0, 0, 0, 0);
+    return today.getTime() >= resFinish.getTime();
+  }).filter((r) => !expiringInOneDay.includes(r));
+  const rest = reservations.filter((r) => !expiringInOneDay.includes(r) && !expiringInOneWeek.includes(r));
 
   return (
     <>
@@ -78,7 +82,13 @@ const ReservationsList = () => {
         <>
           <SubTitle>wygasające w ciągu 1 dnia</SubTitle>
           <div className='resources'>
-            {expiringInOneDay.map((reservation) => <ResourceListItem key={reservation.id} resource={reservation} />)}
+            {expiringInOneDay.map((reservation) =>
+              <div key={reservation.id}>
+                <ResourceListItem resource={reservation}></ResourceListItem>
+                <Button title='Anuluj rezerwację' onClick={() => deleteReservationHandler(reservation.id)}
+                        className='cancel_button'>X</Button>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -86,20 +96,30 @@ const ReservationsList = () => {
         <>
           <SubTitle>wygasające w ciągu 1 tygodnia</SubTitle>
           <div className='resources'>
-            {expiringInOneWeek.map((reservation) => <ResourceListItem key={reservation.id} resource={reservation} />)}
+            {expiringInOneWeek.map((reservation) =>
+              <div key={reservation.id}>
+                <ResourceListItem resource={reservation}></ResourceListItem>
+                <Button title='Anuluj rezerwację' onClick={() => deleteReservationHandler(reservation.id)}
+                        className='cancel_button'>X</Button>
+              </div>
+            )}
           </div>
         </>
       )}
-      <SubTitle>wygasające w ciągu 1 miesiąca</SubTitle>
-      <div className='resources'>
-        {rest.map((reservation) =>
-          <div key={reservation.id}>
-            <ResourceListItem resource={reservation}></ResourceListItem>
-            <Button title='Anuluj rezerwację' onClick={() => deleteReservationHandler(reservation.id)}
-                    className='cancel_button'>X</Button>
+      {rest.length > 0 && (
+        <>
+          <SubTitle>wygasające w ciągu 1 miesiąca</SubTitle>
+          <div className='resources'>
+            {rest.map((reservation) =>
+              <div key={reservation.id}>
+                <ResourceListItem resource={reservation}></ResourceListItem>
+                <Button title='Anuluj rezerwację' onClick={() => deleteReservationHandler(reservation.id)}
+                        className='cancel_button'>X</Button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </>
   );
 };
