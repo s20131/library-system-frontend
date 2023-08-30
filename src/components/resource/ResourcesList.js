@@ -35,7 +35,7 @@ const ResourcesList = (props) => {
   if (resources.length === 0 && !isLoading) {
     return (
       <h2 className='padded_content'>
-        Nie znaleziono żadnych {props.resource === 'books' ? 'książek' : 'ebooków'}.
+        Nie znaleziono żadnych {props.resource === 'books' ? 'książek' : 'e-booków'}.
       </h2>
     );
   }
