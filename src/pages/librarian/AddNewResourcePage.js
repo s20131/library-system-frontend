@@ -8,6 +8,7 @@ const AddNewResourcePage = () => {
       <div className='padded_content' style={{ display: 'flex' }}>
         <ul className='padded_content librarian-list' style={{ marginRight: '2rem' }}>
           <li><h3><Link to='/librarian/resources/add/book'>Dodaj książkę</Link></h3></li>
+          <li><h3><Link to='/librarian/resources/add/ebook'>Dodaj e-booka</Link></h3></li>
         </ul>
       </div>
     </>
