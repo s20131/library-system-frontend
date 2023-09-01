@@ -72,10 +72,10 @@ const ChangeResourcesAvailabilityPage = (props) => {
 
   return (
     <>
-      <PageTitle>Zmień liczbę dostępności {props.resource === 'books' ? 'książek' : 'ebooków'}</PageTitle>
+      <PageTitle>Zmień liczbę dostępności {props.resource === 'books' ? 'książek' : 'e-booków'}</PageTitle>
       <div className='wrapper' style={{ marginLeft: '2rem' }}>
         <form onSubmit={handleAvailabilitySave} className='padded_content login_form' style={{ maxWidth: '500px' }}>
-          <label>Wybierz {props.resource === 'books' ? 'książkę' : 'ebooka'}</label>
+          <label>Wybierz {props.resource === 'books' ? 'książkę' : 'e-booka'}</label>
           <select name='resources'
                   id='resources'
                   ref={resourcesOption}

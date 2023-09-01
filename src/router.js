@@ -20,6 +20,7 @@ import AddNewResourcePage from './pages/librarian/AddNewResourcePage';
 import AddNewBookPage from './pages/librarian/AddNewBookPage';
 import ChangeAvailabilityPage from './pages/librarian/ChangeAvailabilityPage';
 import ChangeResourcesAvailabilityPage from './pages/librarian/ChangeResourcesAvailabilityPage';
+import AddNewEbookPage from './pages/librarian/AddNewEbookPage';
 
 const router = createBrowserRouter([
   {
@@ -59,7 +60,8 @@ const router = createBrowserRouter([
         loader: checkLibrarianRoleLoader
       },
       { path: 'librarian/resources/add', element: <AddNewResourcePage />, loader: checkLibrarianRoleLoader },
-      { path: 'librarian/resources/add/book', element: <AddNewBookPage />, loader: checkLibrarianRoleLoader }
+      { path: 'librarian/resources/add/book', element: <AddNewBookPage />, loader: checkLibrarianRoleLoader },
+      { path: 'librarian/resources/add/ebook', element: <AddNewEbookPage />, loader: checkLibrarianRoleLoader },
     ]
   }
 ]);
